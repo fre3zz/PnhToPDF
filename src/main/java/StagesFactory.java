@@ -39,6 +39,9 @@ public class StagesFactory {
         canvas.heightProperty().bind(stage.heightProperty());
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setLineWidth(2);
+        gc.setStroke(Color.BLACK);
+        gc.setFill(Color.TRANSPARENT);
+        gc.setLineDashes(15, 5);
 
         Button showRBC = new Button("show RBC");
         Button showGran = new Button("show Grans");
@@ -66,38 +69,48 @@ public class StagesFactory {
         gp.setLayoutY(15);
         gp.setLayoutX(15);
 
-        group.getChildren().add(gp);
-
-
 
 
         Rectangle rect = new Rectangle();
+        ImageRectangle imageRectangle = new ImageRectangle();
+
+        showGran.setOnAction((e)->{
+            gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
+            imageRectangle.initializeGrans(Main.getProps());
+            gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
+        });
+        storeGran.setOnAction((e) ->{
+            imageRectangle.storeGrans(Main.getProps());
+        });
         canvas.setOnMousePressed((e)->{
             gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
-            gc.setStroke(Color.BLACK);
-            gc.setFill(Color.TRANSPARENT);
-            gc.setLineDashes(15, 5);
+
             rect.setX(e.getX());
             rect.setY(e.getY());
         });
-canvas.setOnMouseReleased((e)->{
-    rect.setWidth(Math.abs((e.getX() - rect.getX())));
-    rect.setHeight(Math.abs((e.getY() - rect.getY())));
-    //rect.setX((rect.getX() > e.getX()) ? e.getX(): rect.getX());
-    if(rect.getX() > e.getX()) {
-        rect.setX(e.getX());
-    }
+        canvas.setOnMouseReleased((e)->{
+            rect.setWidth(Math.abs((e.getX() - rect.getX())));
+            rect.setHeight(Math.abs((e.getY() - rect.getY())));
+            //rect.setX((rect.getX() > e.getX()) ? e.getX(): rect.getX());
+            if(rect.getX() > e.getX()) {
+                rect.setX(e.getX());
+            }
     //rect.setY((rect.getY() > e.getY()) ? e.getY(): rect.getY());
-    if(rect.getY() > e.getY()) {
-        rect.setY(e.getY());
-    }
+            if(rect.getY() > e.getY()) {
+                rect.setY(e.getY());
+            }
 
-    gc.fillRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-    gc.strokeRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-    System.out.printf("x: %f ; \n y: %f ; \n width: %f ; \n height: %f ;", rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+            imageRectangle.setX(rect.getX());
+            imageRectangle.setY(rect.getY());
+            imageRectangle.setWidth(rect.getWidth());
+            imageRectangle.setHeight(rect.getHeight());
+
+            gc.fillRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+            gc.strokeRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+    //System.out.printf("x: %f ; \n y: %f ; \n width: %f ; \n height: %f ;", rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 });
 
-        group.getChildren().addAll(canvas);
+        group.getChildren().addAll(canvas, gp);
         stage.setWidth(image.getWidth());
         stage.setHeight(image.getHeight());
 stage.setResizable(false);

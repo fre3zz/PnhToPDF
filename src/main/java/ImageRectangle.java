@@ -1,3 +1,6 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 
 public class ImageRectangle {
@@ -52,6 +55,21 @@ public class ImageRectangle {
     }
 
     public void initializeGrans(Properties properties){
-
+        this.x = Double.parseDouble(properties.getProperty("GRAN_X"));
+        this.y = Double.parseDouble(properties.getProperty("GRAN_Y"));
+        this.width = Double.parseDouble(properties.getProperty("GRAN_Width"));
+        this.height = Double.parseDouble(properties.getProperty("GRAN_Height"));
+    }
+    public void storeGrans(Properties properties){
+        try(OutputStream os = new FileOutputStream("config.properties")){
+            properties.setProperty("GRAN_X", Double.toString(this.x));
+            properties.setProperty("GRAN_Y", Double.toString(this.y));
+            properties.setProperty("GRAN_Width", Double.toString(this.width));
+            properties.setProperty("GRAN_Height", Double.toString(this.height));
+           properties.store(os,null);
+        }
+        catch (IOException exc){
+            System.out.println("Could not store properties...");
+        }
     }
 }

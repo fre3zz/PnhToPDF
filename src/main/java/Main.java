@@ -256,4 +256,7 @@ private Shape pdfIcon(){
     shape.setFill(Color.RED);
     return shape;
 }
+public static Properties getProps(){
+        return props;
+}
     }
