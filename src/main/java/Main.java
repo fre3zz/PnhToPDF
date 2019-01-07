@@ -112,18 +112,19 @@ Granhbox.setAlignment(Pos.CENTER_LEFT);
 Granhbox.getChildren().addAll(granLabel, granIcon, deniedGranIcon);
 group.add(Granhbox, 0 , 7);
 
-        Button granButton = new Button();
+        Button granButton = new Button("Gran and Mono region select");
         granButton.setOnAction((e)->{
-            PDFtoImage gran = new PDFtoImage(new File(granURL));
-            String granImage = null;
-            try {
-                granImage = gran.getImageUrlFromPDF();
+            if(granURL != null) {
+                PDFtoImage gran = new PDFtoImage(new File(granURL));
+                String granImage = null;
+                try {
+                    granImage = gran.getImageUrlFromPDF();
+                } catch (IOException exc) {
+                    System.out.print(exc);
+                }
+                Stage stage = StagesFactory.pdfImageView(granImage);
+                stage.show();
             }
-            catch (IOException exc){
-                System.out.print(exc);
-            }
-            Stage stage = StagesFactory.pdfImageView(granImage);
-            stage.show();
         });
         group.add(granButton, 1, 7);
 
@@ -194,10 +195,6 @@ rbcIcon.setVisible(false);
             event.setDropCompleted(true);
             event.consume();
         });
-
-
-
-
 primaryStage.setScene(scene);
 primaryStage.show();
     }

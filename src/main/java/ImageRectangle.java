@@ -60,6 +60,18 @@ public class ImageRectangle {
         this.width = Double.parseDouble(properties.getProperty("GRAN_Width"));
         this.height = Double.parseDouble(properties.getProperty("GRAN_Height"));
     }
+    public void initializeRBC(Properties properties){
+        this.x = Double.parseDouble(properties.getProperty("RBC_X"));
+        this.y = Double.parseDouble(properties.getProperty("RBC_Y"));
+        this.width = Double.parseDouble(properties.getProperty("RBC_Width"));
+        this.height = Double.parseDouble(properties.getProperty("RBC_Height"));
+    }
+    public void initializeMono(Properties properties){
+        this.x = Double.parseDouble(properties.getProperty("MONO_X"));
+        this.y = Double.parseDouble(properties.getProperty("MONO_Y"));
+        this.width = Double.parseDouble(properties.getProperty("MONO_Width"));
+        this.height = Double.parseDouble(properties.getProperty("MONO_Height"));
+    }
     public void storeGrans(Properties properties){
         try(OutputStream os = new FileOutputStream("config.properties")){
             properties.setProperty("GRAN_X", Double.toString(this.x));
@@ -67,6 +79,30 @@ public class ImageRectangle {
             properties.setProperty("GRAN_Width", Double.toString(this.width));
             properties.setProperty("GRAN_Height", Double.toString(this.height));
            properties.store(os,null);
+        }
+        catch (IOException exc){
+            System.out.println("Could not store properties...");
+        }
+    }
+    public void storeRBC(Properties properties){
+        try(OutputStream os = new FileOutputStream("config.properties")){
+            properties.setProperty("RBC_X", Double.toString(this.x));
+            properties.setProperty("RBC_Y", Double.toString(this.y));
+            properties.setProperty("RBC_Width", Double.toString(this.width));
+            properties.setProperty("RBC_Height", Double.toString(this.height));
+            properties.store(os,null);
+        }
+        catch (IOException exc){
+            System.out.println("Could not store properties...");
+        }
+    }
+    public void storeMono(Properties properties){
+        try(OutputStream os = new FileOutputStream("config.properties")){
+            properties.setProperty("MONO_X", Double.toString(this.x));
+            properties.setProperty("MONO_Y", Double.toString(this.y));
+            properties.setProperty("MONO_Width", Double.toString(this.width));
+            properties.setProperty("MONO_Height", Double.toString(this.height));
+            properties.store(os,null);
         }
         catch (IOException exc){
             System.out.println("Could not store properties...");

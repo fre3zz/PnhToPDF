@@ -82,6 +82,22 @@ public class StagesFactory {
         storeGran.setOnAction((e) ->{
             imageRectangle.storeGrans(Main.getProps());
         });
+        showMono.setOnAction((e)->{
+            gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
+            imageRectangle.initializeMono(Main.getProps());
+            gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
+        });
+        storeMono.setOnAction((e) ->{
+            imageRectangle.storeMono(Main.getProps());
+        });
+        showRBC.setOnAction((e)->{
+            gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
+            imageRectangle.initializeRBC(Main.getProps());
+            gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
+        });
+        storeRBC.setOnAction((e) ->{
+            imageRectangle.storeRBC(Main.getProps());
+        });
         canvas.setOnMousePressed((e)->{
             gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
 
