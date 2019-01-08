@@ -1,10 +1,12 @@
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -16,6 +18,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -39,7 +42,7 @@ public class Main extends Application {
     private static String granURL = null;
     private static String rbcURL = null;
     private static Properties props;
-
+    private Task docWorker;
 
     public void init(){
         System.out.println("init");
@@ -168,7 +171,21 @@ rbcIcon.setVisible(false);
         });
         group.add(rbcButton, 1, 8);
 
-        Button saveFile = new Button();
+        Button saveFile = new Button("Save File");
+        Text textArea = new Text("...");
+        saveFile.setOnAction((e) -> {
+
+            textArea.setText("");
+            FormDocFile formDocFile = new FormDocFile("name", "year", "department", "date");
+            docWorker = pnhDocWorker(granURL, rbcURL, formDocFile);
+            docWorker.messageProperty().addListener((obsv, ov, nv) ->{
+                textArea.setText(nv);
+            });
+            new Thread(docWorker).start();
+
+        });
+        group.add(saveFile,0,9);
+        group.add(textArea, 1, 9);
 
         scene.setOnDragOver((DragEvent event) -> {
             Dragboard db = event.getDragboard();
@@ -217,7 +234,7 @@ primaryStage.show();
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
         launch(args);
-        System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
+        /*System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
         File file = new File("C://PdfBox_Examples//Blokh_Dzh_-_Java_Effektivnoe_programmirovanie_2_izdanie_-_2008.pdf");
         //Saving the document
         PDDocument document = PDDocument.load(file);
@@ -249,6 +266,7 @@ BufferedImage smallImage = image.getSubimage(100,100,300,300);
         out.close();
         FormDocFile newFile = new FormDocFile(granURL, rbcURL);
         newFile.writeToDocFile();
+        */
     }
     private boolean isValidGranFile(String url){
         return url.contains("gran") && url.endsWith(".pdf");
@@ -274,4 +292,29 @@ private Shape pdfIcon(){
 public static Properties getProps(){
         return props;
 }
+private Task pnhDocWorker(String granURL, String rbcURL, FormDocFile formDocFile) {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception
+            {
+                updateMessage("...");
+                PDFtoImage granFile = new PDFtoImage(new File(granURL));
+                updateMessage("making gran image");
+                String granImageUrl = granFile.getSubImage("gran");
+                updateMessage("making mono image");
+                String monoImageUrl = granFile.getSubImage("mono");
+                PDFtoImage rbcFile = new PDFtoImage(new File(rbcURL));
+                updateMessage("making rbc image");
+                String rbcImageUrl = rbcFile.getSubImage("rbc");
+                updateMessage("making doc file");
+                formDocFile.setGranImageUrl(granImageUrl);
+                formDocFile.setMonoImageUrl(monoImageUrl);
+                formDocFile.setRbcImageUrl(rbcImageUrl);
+                formDocFile.setGranURL(granURL);
+                formDocFile.writeToDocFile();
+
+                return true;
+            }
+        };
     }
+}

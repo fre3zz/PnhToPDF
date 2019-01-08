@@ -12,23 +12,38 @@ public class FormDocFile {
     String granURL;
     String rbcURL;
     XWPFDocument document;
-    String granImgUrl;
-    String monoImgUrl;
-    String rbcImgUrl;
+    String granImageUrl;
+    String monoImageUrl;
+    String rbcImageUrl;
     String date;
+
+    public void setGranURL(String granURL) {
+        this.granURL = granURL;
+    }
+
+    public void setGranImageUrl(String granImageUrl) {
+        this.granImageUrl = granImageUrl;
+    }
+
+    public void setMonoImageUrl(String monoImageUrl) {
+        this.monoImageUrl = monoImageUrl;
+    }
+
+    public void setRbcImageUrl(String rbcImageUrl) {
+        this.rbcImageUrl = rbcImageUrl;
+    }
+
     public FormDocFile(String granURL, String rbcUrl){
 
         this.granURL = granURL;
         this.rbcURL = rbcUrl;
     }
-    public FormDocFile(String name, String year, String department, String date, String granImgUrl, String monoImgUrl, String rbcImgUrl){
+    public FormDocFile(String name, String year, String department, String date){
         this.name = name;
         this.year = year;
         this.department = department;
         this.date = date;
-        this.granImgUrl = granImgUrl;
-        this.monoImgUrl = monoImgUrl;
-        this.rbcImgUrl = monoImgUrl;
+
     }
     public void writeToDocFile() throws IOException, InvalidFormatException {
         File template = new File("template.docx");
@@ -42,19 +57,19 @@ public class FormDocFile {
 
         File granFile = new File(granURL);
 
-        PDFtoImage granFileImg = new PDFtoImage(new File(granURL));
-        String granImageUrl = granFileImg.getSubImage("gran");
+        //PDFtoImage granFileImg = new PDFtoImage(new File(granURL));
+        //String granImageUrl = granFileImg.getSubImage("gran");
         InputStream granIs = new FileInputStream(granImageUrl);
         run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl,Units.toEMU(200), Units.toEMU(200));
 
 
-        String monoImageUrl = granFileImg.getSubImage("mono");
+        //String monoImageUrl = granFileImg.getSubImage("mono");
         InputStream monoIs = new FileInputStream(monoImageUrl);
         run.addPicture(monoIs, XWPFDocument.PICTURE_TYPE_JPEG, monoImageUrl,Units.toEMU(200), Units.toEMU(200));
 
 
-        PDFtoImage rbcFileImg = new PDFtoImage(new File(rbcURL));
-        String rbcImageUrl = rbcFileImg.getSubImage("rbc");
+        //PDFtoImage rbcFileImg = new PDFtoImage(new File(rbcURL));
+        //String rbcImageUrl = rbcFileImg.getSubImage("rbc");
         InputStream rbcIs = new FileInputStream(rbcImageUrl);
         run.addPicture(rbcIs, XWPFDocument.PICTURE_TYPE_JPEG, rbcImageUrl,Units.toEMU(200), Units.toEMU(200));
 
