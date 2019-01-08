@@ -16,10 +16,37 @@ public String getImageUrlFromPDF() throws IOException {
     PDDocument document = PDDocument.load(file);
     PDFRenderer renderer = new PDFRenderer(document);
     BufferedImage image = renderer.renderImage(0);
-    File imgFile = new File("C://PdfBox_Examples//"+ file.getName().substring(0,file.getName().length() - 4) + ".jpg");
-    //File imgFile = new File("C://PdfBox_Examples//123.jpg");
+
+    File imgFile = new File(file.getName().substring(0,file.getName().length() - 4) + ".jpg");
     ImageIO.write(image, "JPEG", imgFile);
+    document.close();
 return imgFile.toURI().toURL().toString();
 }
+public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName) throws IOException{
+    PDDocument document = PDDocument.load(file);
+    PDFRenderer renderer = new PDFRenderer(document);
+    BufferedImage image = renderer.renderImage(0);
+    BufferedImage subImage = image.getSubimage((int)imageRectangle.getX(), (int)imageRectangle.getY(),(int)imageRectangle.getWidth(), (int)imageRectangle.getHeight());
+    File imgFile = new File(fileName + ".jpg");
+    ImageIO.write(subImage, "JPEG", imgFile);
+    document.close();
 
+    return imgFile.getAbsolutePath();
+}
+
+public String getSubImage(String fileName) throws IOException{
+    ImageRectangle imageRectangle = new ImageRectangle();
+    switch (fileName){
+        case "mono":
+            imageRectangle.initializeMono(Main.getProps());
+            break;
+        case "gran":
+            imageRectangle.initializeGrans(Main.getProps());
+            break;
+        case "rbc":
+            imageRectangle.initializeRBC(Main.getProps());
+            break;
+    }
+    return getSubImageURLFromPDF(imageRectangle, fileName);
+}
 }

@@ -142,7 +142,7 @@ rbcIcon.setVisible(false);
             if(!e.isPrimaryButtonDown()){
                 deniedRBCIcon.setVisible(false);
                 rbcIcon.setVisible(false);
-                granURL = null;
+                rbcURL = null;
                 rbcLabel.setText("No file");
             }
         });
@@ -152,7 +152,23 @@ rbcIcon.setVisible(false);
         Rbchbox.setAlignment(Pos.CENTER_LEFT);
         Rbchbox.getChildren().addAll(rbcLabel, rbcIcon, deniedRBCIcon);
         group.add(Rbchbox, 0 , 8);
+        Button rbcButton = new Button("RBC region select");
+        rbcButton.setOnAction((e)->{
+            if(rbcURL != null) {
+                PDFtoImage rbc = new PDFtoImage(new File(rbcURL));
+                String rbcImage = null;
+                try {
+                    rbcImage = rbc.getImageUrlFromPDF();
+                } catch (IOException exc) {
+                    System.out.print(exc);
+                }
+                Stage stage = StagesFactory.pdfImageView(rbcImage);
+                stage.show();
+            }
+        });
+        group.add(rbcButton, 1, 8);
 
+        Button saveFile = new Button();
 
         scene.setOnDragOver((DragEvent event) -> {
             Dragboard db = event.getDragboard();
@@ -180,7 +196,7 @@ rbcIcon.setVisible(false);
                         if(isValidRbcFile(file.toURI().toURL().toString())){
                             rbcIcon.setVisible(true);
                             deniedRBCIcon.setVisible(true);
-                            rbcURL = file.toURI().toURL().toString();
+                            rbcURL = file.getAbsolutePath();
                             rbcLabel.setText(file.getName());
                         }
 
@@ -231,6 +247,8 @@ BufferedImage smallImage = image.getSubimage(100,100,300,300);
         is.close();
         document1.write(out);
         out.close();
+        FormDocFile newFile = new FormDocFile(granURL, rbcURL);
+        newFile.writeToDocFile();
     }
     private boolean isValidGranFile(String url){
         return url.contains("gran") && url.endsWith(".pdf");
