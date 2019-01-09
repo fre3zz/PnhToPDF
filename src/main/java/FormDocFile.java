@@ -49,7 +49,7 @@ public class FormDocFile {
         File template = new File("template.docx");
         InputStream is = new FileInputStream(template);
         document = new XWPFDocument(is);
-        changeString("pnh","бубубу");
+        changeString("%pnh","бубубу");
         XWPFTableCell cell = getCellFromTable(0,1,1);
         XWPFParagraph par = cell.addParagraph();
 
@@ -97,8 +97,12 @@ public class FormDocFile {
             if (runs != null) {
                 for (XWPFRun r : runs) {
                     String text = r.getText(0);
-                    if (text != null && text.contains(initialText)) {
+                    //String text = r.toString();
+                    System.out.println(text);
+                    if (text != null && (text.contains(initialText) || text.equalsIgnoreCase(initialText))) {
+                        System.out.println("replacing text");
                         text = text.replace(initialText, targetText);
+
                         r.setText(text, 0);
                     }
                 }
