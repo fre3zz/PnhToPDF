@@ -13,19 +13,26 @@ public PDFtoImage(File file){
     System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
 }
 public String getImageUrlFromPDF() throws IOException {
+    return getImageUrlFromPDF(0);
+}
+    
+public String getImageUrlFromPDF(int pageNumber) throws IOException {
     PDDocument document = PDDocument.load(file);
     PDFRenderer renderer = new PDFRenderer(document);
-    BufferedImage image = renderer.renderImage(0);
+    BufferedImage image = renderer.renderImage(pageNumber);
 
     File imgFile = new File(file.getName().substring(0,file.getName().length() - 4) + ".jpg");
     ImageIO.write(image, "JPEG", imgFile);
     document.close();
 return imgFile.toURI().toURL().toString();
-}
+}    
 public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName) throws IOException{
+    return getSubImageURLFromPDF(imageRectangle, fileName, 0);
+}
+    public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName, int pageNumber) throws IOException{
     PDDocument document = PDDocument.load(file);
     PDFRenderer renderer = new PDFRenderer(document);
-    BufferedImage image = renderer.renderImage(0);
+    BufferedImage image = renderer.renderImage(pageNumber);
     BufferedImage subImage = image.getSubimage((int)imageRectangle.getX(), (int)imageRectangle.getY(),(int)imageRectangle.getWidth(), (int)imageRectangle.getHeight());
     File imgFile = new File(fileName + ".jpg");
     ImageIO.write(subImage, "JPEG", imgFile);
