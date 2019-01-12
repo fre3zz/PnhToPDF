@@ -61,7 +61,7 @@ public class FormDocFile {
         double gran, mono, rbc1, rbc2, rbctot;
         String result;
         File granFile = new File(granURL);
-        File template = new File("template.docx");
+        File template = new File(getClass().getClassLoader().getResource("template.docx").getFile());
         InputStream is = new FileInputStream(template);
         document = new XWPFDocument(is);
         changeString("name", name);

@@ -28,7 +28,7 @@ public String getImageUrlFromPDF() throws IOException {
 }
     
 public String getImageUrlFromPDF(int pageNumber) throws IOException {
-    String fileName = file.getName().substring(0,file.getName().length() - 4) + ".jpg";
+    String fileName = "resources\\" +file.getName().substring(0,file.getName().length() - 4) + ".jpg";
     return getImageUrlFromPDF(pageNumber, fileName);
 }
 

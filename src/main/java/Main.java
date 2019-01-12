@@ -52,7 +52,7 @@ public class Main extends Application {
         System.out.println("init");
         props = new Properties();
         //initProperties(properties);
-        try(InputStream is = new FileInputStream("config.properties")){
+        try(InputStream is = new FileInputStream(getClass().getClassLoader().getResource("config.properties").getFile())){
             props.load(is);
         }
         catch (IOException e){
