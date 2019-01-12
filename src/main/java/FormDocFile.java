@@ -10,12 +10,18 @@ public class FormDocFile {
     String year;
     String department;
     String granURL;
-    String rbcURL;
+
     XWPFDocument document;
     String granImageUrl;
     String monoImageUrl;
     String rbcImageUrl;
     String date;
+    String fileName;
+    String pnhGran;
+    String pnhMono;
+    String pnhRBC1;
+    String pnhRBC2;
+
 
     public void setGranURL(String granURL) {
         this.granURL = granURL;
@@ -33,10 +39,8 @@ public class FormDocFile {
         this.rbcImageUrl = rbcImageUrl;
     }
 
-    public FormDocFile(String granURL, String rbcUrl){
+    public FormDocFile(){
 
-        this.granURL = granURL;
-        this.rbcURL = rbcUrl;
     }
     public FormDocFile(String name, String year, String department, String date){
         this.name = name;
@@ -49,27 +53,28 @@ public class FormDocFile {
         File template = new File("template.docx");
         InputStream is = new FileInputStream(template);
         document = new XWPFDocument(is);
-        changeString("%pnh","бубубу");
-        XWPFTableCell cell = getCellFromTable(0,1,1);
-        XWPFParagraph par = cell.addParagraph();
+        changeString("name",name);
 
-        XWPFRun run = par.createRun();
 
         File granFile = new File(granURL);
 
-        //PDFtoImage granFileImg = new PDFtoImage(new File(granURL));
-        //String granImageUrl = granFileImg.getSubImage("gran");
+        XWPFTableCell GRANcell = getCellFromTable(1,1,1);
+        XWPFParagraph par = GRANcell.getParagraphs().get(0);
+        XWPFRun run = par.createRun();
         InputStream granIs = new FileInputStream(granImageUrl);
         run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl,Units.toEMU(200), Units.toEMU(200));
 
 
-        //String monoImageUrl = granFileImg.getSubImage("mono");
+        XWPFTableCell MONOcell = getCellFromTable(1,3,1);
+        par = MONOcell.getParagraphs().get(0);
+        run = par.createRun();
         InputStream monoIs = new FileInputStream(monoImageUrl);
         run.addPicture(monoIs, XWPFDocument.PICTURE_TYPE_JPEG, monoImageUrl,Units.toEMU(200), Units.toEMU(200));
 
 
-        //PDFtoImage rbcFileImg = new PDFtoImage(new File(rbcURL));
-        //String rbcImageUrl = rbcFileImg.getSubImage("rbc");
+        XWPFTableCell RBCcell = getCellFromTable(1,1,0);
+        par = RBCcell.getParagraphs().get(0);
+        run = par.createRun();
         InputStream rbcIs = new FileInputStream(rbcImageUrl);
         run.addPicture(rbcIs, XWPFDocument.PICTURE_TYPE_JPEG, rbcImageUrl,Units.toEMU(200), Units.toEMU(200));
 
@@ -77,7 +82,7 @@ public class FormDocFile {
 
 
 
-        String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + name +".doc";
+        String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + name +".docx";
         FileOutputStream out = new FileOutputStream(resultFileURL);
         granIs.close();
         monoIs.close();
@@ -97,8 +102,7 @@ public class FormDocFile {
             if (runs != null) {
                 for (XWPFRun r : runs) {
                     String text = r.getText(0);
-                    //String text = r.toString();
-                    System.out.println(text);
+
                     if (text != null && (text.contains(initialText) || text.equalsIgnoreCase(initialText))) {
                         System.out.println("replacing text");
                         text = text.replace(initialText, targetText);

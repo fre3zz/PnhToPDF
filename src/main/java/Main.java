@@ -4,10 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -29,6 +26,7 @@ import org.apache.poi.wp.usermodel.Paragraph;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import sun.util.resources.LocaleData;
 
 import javax.imageio.ImageIO;
 
@@ -36,7 +34,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
 public class Main extends Application {
@@ -44,6 +45,8 @@ public class Main extends Application {
     private static String rbcURL = null;
     private static Properties props;
     private Task docWorker;
+    private String fileName = "";
+    private String fileDate = "";
 
     public void init(){
         System.out.println("init");
@@ -63,7 +66,7 @@ public class Main extends Application {
         group.setHgap(10);
         group.setVgap(10);
         group.setPadding(new Insets(10));
-        Scene scene = new Scene(group, 700,500);
+        Scene scene = new Scene(group, 700,600);
         ColumnConstraints cs1 = new ColumnConstraints();
         ColumnConstraints cs2 = new ColumnConstraints();
         group.getColumnConstraints().addAll(cs1, cs2);
@@ -71,25 +74,31 @@ public class Main extends Application {
         Label name = new Label("ФИО:");
         group.add(name, 0, 0);
         TextField nameTextField = new TextField();
+        nameTextField.setPrefWidth(500);
         group.add(nameTextField, 1, 0);
+
         group.add(new Label("год рождения:"), 0, 1);
         TextField yearTextField = new TextField();
         group.add(yearTextField, 1,1);
         group.add(new Label("Отделение:"), 0,2);
         TextField departmentTextField = new TextField();
         group.add(departmentTextField,1,2);
-        group.add(new Label("ПНГ I тип эритроциты:"), 0, 3);
-        TextField PnhRBCi = new TextField();
-        group.add(PnhRBCi, 1,3);
+        group.add(new Label("Дата:"), 0, 3);
+        DatePicker date = new DatePicker();
+        group.add(date,1,3);
         group.add(new Label("ПНГ II тип эритроциты:"), 0, 4);
+        TextField PnhRBCi = new TextField();
+        group.add(PnhRBCi, 1,4);
+        group.add(new Label("ПНГ III тип эритроциты:"), 0, 5);
         TextField PnhRBCii = new TextField();
-        group.add(PnhRBCii, 1,4);
-        group.add(new Label("ПНГ гранулоциты:"), 0, 5);
+        group.add(PnhRBCii, 1,5);
+        group.add(new Label("ПНГ гранулоциты:"), 0, 6);
         TextField PnhGrans = new TextField();
-        group.add(PnhGrans, 1,5);
-        group.add(new Label("ПНГ моноциты:"), 0, 6);
+        group.add(PnhGrans, 1,6);
+        group.add(new Label("ПНГ моноциты:"), 0, 7);
         TextField PnhMono = new TextField();
-        group.add(PnhMono, 1,6);
+        group.add(PnhMono, 1,7);
+
         Label granLabel = new Label("No file");
 Shape granIcon = pdfIcon();
 
@@ -114,7 +123,7 @@ HBox Granhbox = new HBox();
 Granhbox.setSpacing(10);
 Granhbox.setAlignment(Pos.CENTER_LEFT);
 Granhbox.getChildren().addAll(granLabel, granIcon, deniedGranIcon);
-group.add(Granhbox, 0 , 7);
+group.add(Granhbox, 0 , 8);
 
         Button granButton = new Button("Gran and Mono region select");
         granButton.setOnAction((e)->{
@@ -139,7 +148,7 @@ group.add(Granhbox, 0 , 7);
                 });
             }
         });
-        group.add(granButton, 1, 7);
+        group.add(granButton, 1, 8);
 
         Label rbcLabel = new Label("No file");
 
@@ -164,7 +173,7 @@ rbcIcon.setVisible(false);
         Rbchbox.setSpacing(10);
         Rbchbox.setAlignment(Pos.CENTER_LEFT);
         Rbchbox.getChildren().addAll(rbcLabel, rbcIcon, deniedRBCIcon);
-        group.add(Rbchbox, 0 , 8);
+        group.add(Rbchbox, 0 , 9);
         Button rbcButton = new Button("RBC region select");
         rbcButton.setOnAction((e)->{
             if(rbcURL != null) {
@@ -188,23 +197,50 @@ rbcIcon.setVisible(false);
                 });
             }
         });
-        group.add(rbcButton, 1, 8);
+        group.add(rbcButton, 1, 9);
 
-        Button saveFile = new Button("Save File");
-        Text textArea = new Text("...");
-        saveFile.setOnAction((e) -> {
+        group.add(new Label("File name"), 0, 10);
+        TextField fileTextField = new TextField();
+        group.add(fileTextField, 1, 10);
 
-            textArea.setText("");
-            FormDocFile formDocFile = new FormDocFile("name", "year", "department", "date");
-            docWorker = pnhDocWorker(granURL, rbcURL, formDocFile);
-            docWorker.messageProperty().addListener((obsv, ov, nv) ->{
-                textArea.setText(nv);
-            });
-            new Thread(docWorker).start();
+        nameTextField.focusedProperty().addListener((obs, ov, nv) -> {
+            if(!nv && nameTextField.getText().matches("[а-яА-Я]{1,}[\\s][а-яА-Я]{1,}[\\s][а-яА-Я]{1,}")){
+                String[] str = nameTextField.getText().split("\\s");
+                fileName = str[0] + " " +str[1].substring(0,1) + str[2].substring(0,1);
+fileTextField.setText(fileName + " " + fileDate);
+            }
 
         });
-        group.add(saveFile,0,9);
-        group.add(textArea, 1, 9);
+        date.focusedProperty().addListener((obs, ov, nv) -> {
+            if(!nv){
+                LocalDate localDate = date.getValue();
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
+
+                fileDate = localDate.format(dtf);;
+
+                fileTextField.setText(fileName + " " + fileDate);
+            }
+        });
+        Button saveFile = new Button("Save File");
+        Text textArea = new Text("...");
+
+        saveFile.setOnAction((e) -> {
+if(true) {
+                textArea.setText("");
+                FormDocFile formDocFile = new FormDocFile();
+
+                docWorker = pnhDocWorker(granURL, rbcURL, formDocFile);
+                docWorker.messageProperty().addListener((obsv, ov, nv) -> {
+                    textArea.setText(nv);
+                });
+                new Thread(docWorker).start();
+            }
+
+        });
+
+
+        group.add(saveFile,0,11);
+        group.add(textArea, 1, 11);
 
         scene.setOnDragOver((DragEvent event) -> {
             Dragboard db = event.getDragboard();
@@ -299,7 +335,7 @@ private Task pnhDocWorker(String granURL, String rbcURL, FormDocFile formDocFile
                 formDocFile.setRbcImageUrl(rbcImageUrl);
                 formDocFile.setGranURL(granURL);
                 formDocFile.writeToDocFile();
-
+updateMessage("done!");
                 return true;
             }
         };

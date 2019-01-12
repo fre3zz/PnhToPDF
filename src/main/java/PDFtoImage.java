@@ -44,7 +44,7 @@ public String getImageUrlFromPDF(int pageNumber, String fileName) throws IOExcep
 }
 
 public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName) throws IOException{
-    return getSubImageURLFromPDF(imageRectangle, fileName, 0);
+    return getSubImageURLFromPDF(imageRectangle, fileName, imageRectangle.getPageNumber());
 }
 public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName, int pageNumber) throws IOException{
     renderer = new PDFRenderer(document);
