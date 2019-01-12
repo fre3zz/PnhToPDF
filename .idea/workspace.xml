@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef38a07a-4645-4381-abf3-d54b43484b80" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../PnhToPDF/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PnhToPDF/src/main/java/FormDocFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/src/main/java/FormDocFile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../PnhToPDF/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/src/main/java/Main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -23,8 +21,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../PnhToPDF/src/main/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-70">
-              <caret line="149" column="28" selection-start-line="149" selection-start-column="28" selection-end-line="149" selection-end-column="28" />
+            <state relative-caret-position="321">
+              <caret line="328" column="9" selection-start-line="328" selection-start-column="9" selection-end-line="328" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#12201#12202#0" expanded="true" />
@@ -450,7 +448,14 @@
       <option name="project" value="LOCAL" />
       <updated>1547306890082</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="12 01 18">
+      <created>1547308848748</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1547308848748</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView">
@@ -464,6 +469,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
@@ -1325,8 +1331,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../PnhToPDF/src/main/java/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-70">
-          <caret line="149" column="28" selection-start-line="149" selection-start-column="28" selection-end-line="149" selection-end-column="28" />
+        <state relative-caret-position="321">
+          <caret line="328" column="9" selection-start-line="328" selection-start-column="9" selection-end-line="328" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#12201#12202#0" expanded="true" />

@@ -66,7 +66,7 @@ public class Main extends Application {
         group.setHgap(10);
         group.setVgap(10);
         group.setPadding(new Insets(10));
-        Scene scene = new Scene(group, 700,600);
+        Scene scene = new Scene(group, 700,650);
         ColumnConstraints cs1 = new ColumnConstraints();
         ColumnConstraints cs2 = new ColumnConstraints();
         group.getColumnConstraints().addAll(cs1, cs2);
@@ -312,7 +312,24 @@ if(!nameTextField.getText().equals("") &&
 
         group.add(saveFile,0,11);
         group.add(textArea, 1, 11);
+Button refresh = new Button("refresh");
+group.add(refresh,1, 12);
+refresh.setOnAction((e) -> {
+    deniedRBCIcon.setVisible(false);
+    rbcIcon.setVisible(false);
+    rbcURL = null;
+    rbcLabel.setText("No file");
+    deniedGranIcon.setVisible(false);
+    granIcon.setVisible(false);
+    granURL = null;
+    granLabel.setText("No file");
+    nameTextField.setText("");
+    yearTextField.setText("");
+    departmentTextField.setText("");
+    date.setValue(null);
+    fileTextField.setText("");
 
+});
         scene.setOnDragOver((DragEvent event) -> {
             Dragboard db = event.getDragboard();
             if ( db.hasFiles()) {
