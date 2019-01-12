@@ -3,9 +3,13 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class FormDocFile {
     String name = "файл";
@@ -41,53 +45,76 @@ public class FormDocFile {
         this.rbcImageUrl = rbcImageUrl;
     }
 
-    public FormDocFile(){
+    public FormDocFile() {
 
     }
-    public FormDocFile(String name, String year, String department, LocalDate date){
+
+    public FormDocFile(String name, String year, String department, LocalDate date) {
         this.name = name;
         this.year = year;
         this.department = department;
         this.date = date;
 
     }
+
     public void writeToDocFile() throws IOException, InvalidFormatException {
+        double gran, mono, rbc1, rbc2, rbctot;
+        File granFile = new File(granURL);
         File template = new File("template.docx");
         InputStream is = new FileInputStream(template);
         document = new XWPFDocument(is);
-        changeString("name",name);
+        changeString("name", name);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         changeString("date", date.format(dtf));
         changeString("year", year);
         changeString("department", department);
+        XWPFTable table = document.getTables().get(0);
 
-        File granFile = new File(granURL);
+        gran = parseString(pnhGran);
+        mono = parseString(pnhMono);
+        rbc1 = parseString(pnhRBC1);
+        rbc2 = parseString(pnhRBC2);
 
-        XWPFTableCell GRANcell = getCellFromTable(1,1,1);
+        changeString("RBC1", formatDouble(rbc1), table);
+        changeString("RBC2", formatDouble(rbc2), table);
+        changeString("MONO", formatDouble(mono), table);
+        changeString("GRAN", formatDouble(gran), table);
+        changeString("WTF", formatDouble(rbc1+rbc2), table);
+
+
+
+
+
+        rbctot = rbc1 + rbc2;
+        System.out.println(rbctot);
+        String rbcTot = Double.toString(rbctot);
+        System.out.println(rbcTot);
+
+
+        XWPFTableCell GRANcell = getCellFromTable(1, 1, 1);
         XWPFParagraph par = GRANcell.getParagraphs().get(0);
         XWPFRun run = par.createRun();
         InputStream granIs = new FileInputStream(granImageUrl);
-        run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl,Units.toEMU(200), Units.toEMU(200));
+        run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl, Units.toEMU(200), Units.toEMU(200));
 
 
-        XWPFTableCell MONOcell = getCellFromTable(1,3,1);
+        XWPFTableCell MONOcell = getCellFromTable(1, 3, 1);
         par = MONOcell.getParagraphs().get(0);
         run = par.createRun();
         InputStream monoIs = new FileInputStream(monoImageUrl);
-        run.addPicture(monoIs, XWPFDocument.PICTURE_TYPE_JPEG, monoImageUrl,Units.toEMU(200), Units.toEMU(200));
+        run.addPicture(monoIs, XWPFDocument.PICTURE_TYPE_JPEG, monoImageUrl, Units.toEMU(200), Units.toEMU(200));
 
 
-        XWPFTableCell RBCcell = getCellFromTable(1,1,0);
+        XWPFTableCell RBCcell = getCellFromTable(1, 1, 0);
         par = RBCcell.getParagraphs().get(0);
         run = par.createRun();
         InputStream rbcIs = new FileInputStream(rbcImageUrl);
-        run.addPicture(rbcIs, XWPFDocument.PICTURE_TYPE_JPEG, rbcImageUrl,Units.toEMU(200), Units.toEMU(200));
+        run.addPicture(rbcIs, XWPFDocument.PICTURE_TYPE_JPEG, rbcImageUrl, Units.toEMU(200), Units.toEMU(200));
 
         //Write the Document in file system
 
 
-
-        String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + fileName +".docx";
+        String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + fileName + ".docx";
         FileOutputStream out = new FileOutputStream(resultFileURL);
         granIs.close();
         monoIs.close();
@@ -95,11 +122,12 @@ public class FormDocFile {
         document.write(out);
         out.close();
     }
-    public XWPFTableCell getCellFromTable(int tableNumber, int rowNumber, int cellNumber){
-     XWPFTable table = document.getTables().get(tableNumber);
-     XWPFTableRow row = table.getRow(rowNumber);
-     XWPFTableCell cell = row.getCell(cellNumber);
-     return cell;
+
+    public XWPFTableCell getCellFromTable(int tableNumber, int rowNumber, int cellNumber) {
+        XWPFTable table = document.getTables().get(tableNumber);
+        XWPFTableRow row = table.getRow(rowNumber);
+        XWPFTableCell cell = row.getCell(cellNumber);
+        return cell;
     }
 
     public String getName() {
@@ -198,7 +226,7 @@ public class FormDocFile {
         this.pnhRBC2 = pnhRBC2;
     }
 
-    public void changeString(String initialText, String targetText){
+    public void changeString(String initialText, String targetText) {
         for (XWPFParagraph p : document.getParagraphs()) {
             List<XWPFRun> runs = p.getRuns();
             if (runs != null) {
@@ -215,5 +243,48 @@ public class FormDocFile {
                 }
             }
         }
+    }
+
+    public void changeString(String initialText, String targetText, XWPFTable table) {
+        for (XWPFTableRow row : table.getRows()) {
+            for (XWPFTableCell cell : row.getTableCells()) {
+                for (XWPFParagraph par : cell.getParagraphs()) {
+                    List<XWPFRun> runs = par.getRuns();
+                    if (runs != null) {
+
+                        for (XWPFRun r : runs) {
+                            String text = r.getText(0);
+
+                            if (text != null && (text.contains(initialText) || text.equalsIgnoreCase(initialText))) {
+                                System.out.println("replacing text");
+                                text = text.replace(initialText, targetText);
+
+                                r.setText(text, 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private double parseString(String str){
+        double res = 0;
+        if (str.contains(",")) {
+            try {
+                NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.GERMANY);
+                res = nf_in.parse(str).doubleValue();
+            }
+            catch (ParseException pe){
+                System.out.println("could not parse");
+            }
+        }
+        else res = Double.parseDouble(str);
+        return res;
+    }
+    private String formatDouble(double d){
+        NumberFormat nf_out = NumberFormat.getNumberInstance(Locale.GERMANY);
+        nf_out.setMaximumFractionDigits(2);
+        String output = nf_out.format(d);
+        return output;
     }
 }

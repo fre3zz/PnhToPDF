@@ -228,11 +228,11 @@ fileTextField.setText(fileName + " " + fileDate);
 if(!nameTextField.getText().equals("") &&
         date.getValue() != null &&
         !departmentTextField.getText().equals("") &&
-        !yearTextField.getText().equals("") &&
-        !PnhGrans.getText().equals("") &&
-        !PnhMono.getText().equals("") &&
-        !PnhRBCi.getText().equals("") &&
-        !PnhRBCii.getText().equals("") &&
+        !yearTextField.getText().equals("") && yearTextField.getText().matches("[0-9]{4}") &&
+        !PnhGrans.getText().equals("") && PnhGrans.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+        !PnhMono.getText().equals("") && PnhMono.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+        !PnhRBCi.getText().equals("") && PnhRBCi.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+        !PnhRBCii.getText().equals("") && PnhRBCii.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
         !fileTextField.getText().equals("")) {
                 textArea.setText("");
                 FormDocFile formDocFile = new FormDocFile();
