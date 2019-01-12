@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef38a07a-4645-4381-abf3-d54b43484b80" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../PnhToPDF/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PnhToPDF/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/config.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../PnhToPDF/src/main/java/ImageRectangle.java" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/src/main/java/ImageRectangle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PnhToPDF/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PnhToPDF/src/main/java/PDFtoImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/src/main/java/PDFtoImage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../PnhToPDF/src/main/java/StagesFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../PnhToPDF/src/main/java/StagesFactory.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -55,8 +51,8 @@
       <file leaf-file-name="StagesFactory.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../PnhToPDF/src/main/java/StagesFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="83">
-              <caret line="86" column="62" selection-start-line="86" selection-start-column="62" selection-end-line="86" selection-end-column="62" />
+            <state relative-caret-position="323">
+              <caret line="109" column="63" selection-start-line="109" selection-start-column="63" selection-end-line="109" selection-end-column="63" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -67,12 +63,14 @@
       <file leaf-file-name="ImageRectangle.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../PnhToPDF/src/main/java/ImageRectangle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="746">
-              <caret line="113" column="38" lean-forward="true" selection-start-line="113" selection-start-column="38" selection-end-line="113" selection-end-column="38" />
+            <state relative-caret-position="355">
+              <caret line="60" column="31" selection-start-line="60" selection-start-column="31" selection-end-line="60" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1127#1128#0" expanded="true" />
                 <element signature="e#1146#1147#0" expanded="true" />
+                <element signature="e#1203#1204#0" expanded="true" />
+                <element signature="e#1240#1241#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -349,7 +347,14 @@
       <option name="project" value="LOCAL" />
       <updated>1547286205349</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="12 01 18">
+      <created>1547291569595</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1547291569595</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -480,6 +485,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1127#1128#0" expanded="true" />
             <element signature="e#1146#1147#0" expanded="true" />
+            <element signature="e#1203#1204#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -551,6 +558,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1127#1128#0" expanded="true" />
             <element signature="e#1146#1147#0" expanded="true" />
+            <element signature="e#1203#1204#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -622,6 +631,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1127#1128#0" expanded="true" />
             <element signature="e#1146#1147#0" expanded="true" />
+            <element signature="e#1203#1204#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -693,6 +704,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1127#1128#0" expanded="true" />
             <element signature="e#1146#1147#0" expanded="true" />
+            <element signature="e#1203#1204#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -936,20 +949,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../PnhToPDF/src/main/java/ImageRectangle.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="746">
-          <caret line="113" column="38" lean-forward="true" selection-start-line="113" selection-start-column="38" selection-end-line="113" selection-end-column="38" />
+        <state relative-caret-position="355">
+          <caret line="60" column="31" selection-start-line="60" selection-start-column="31" selection-end-line="60" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1127#1128#0" expanded="true" />
             <element signature="e#1146#1147#0" expanded="true" />
+            <element signature="e#1203#1204#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../PnhToPDF/src/main/java/StagesFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="86" column="62" selection-start-line="86" selection-start-column="62" selection-end-line="86" selection-end-column="62" />
+        <state relative-caret-position="323">
+          <caret line="109" column="63" selection-start-line="109" selection-start-column="63" selection-end-line="109" selection-end-column="63" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

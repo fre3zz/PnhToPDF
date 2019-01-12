@@ -57,6 +57,9 @@ public class ImageRectangle {
     public void setPageNumber(int pageNumber){
         this.pageNumber = pageNumber;
     }
+    public int getPageNumber(){
+        return this.pageNumber;
+    }
     public void initializeGrans(Properties properties){
         this.x = Double.parseDouble(properties.getProperty("GRAN_X"));
         this.y = Double.parseDouble(properties.getProperty("GRAN_Y"));

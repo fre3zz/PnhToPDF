@@ -106,6 +106,10 @@ prevImage.setOnAction((e)->{
         showGran.setOnAction((e)->{
             gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
             imageRectangle.initializeGrans(Main.getProps());
+            if(imageRectangle.getPageNumber() != pageNumber.get()){
+                pageNumber.set(imageRectangle.getPageNumber());
+                imageView.setImage(imageList.get(pageNumber.get()));
+            }
             gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
         });
         storeGran.setOnAction((e) ->{
@@ -115,6 +119,10 @@ prevImage.setOnAction((e)->{
         showMono.setOnAction((e)->{
             gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
             imageRectangle.initializeMono(Main.getProps());
+            if(imageRectangle.getPageNumber() != pageNumber.get()){
+                pageNumber.set(imageRectangle.getPageNumber());
+                imageView.setImage(imageList.get(pageNumber.get()));
+            }
             gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
         });
         storeMono.setOnAction((e) ->{
@@ -124,6 +132,10 @@ prevImage.setOnAction((e)->{
         showRBC.setOnAction((e)->{
             gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
             imageRectangle.initializeRBC(Main.getProps());
+            if(imageRectangle.getPageNumber() != pageNumber.get()){
+                pageNumber.set(imageRectangle.getPageNumber());
+                imageView.setImage(imageList.get(pageNumber.get()));
+            }
             gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
         });
         storeRBC.setOnAction((e) ->{
