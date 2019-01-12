@@ -59,6 +59,7 @@ public class FormDocFile {
 
     public void writeToDocFile() throws IOException, InvalidFormatException {
         double gran, mono, rbc1, rbc2, rbctot;
+        String result;
         File granFile = new File(granURL);
         File template = new File("template.docx");
         InputStream is = new FileInputStream(template);
@@ -74,42 +75,41 @@ public class FormDocFile {
         mono = parseString(pnhMono);
         rbc1 = parseString(pnhRBC1);
         rbc2 = parseString(pnhRBC2);
+        rbctot = rbc1 + rbc2;
+        if(rbctot == 0 && gran == 0 && mono == 0)result = "ПНГ-клон не выявляется.";
+        else if(rbctot < 1 && gran < 1 && mono < 1) result = "Выявляется минорный ПНГ-клон.";
+        else result = "ПНГ-клон выявляется";
 
         changeString("RBC1", formatDouble(rbc1), table);
         changeString("RBC2", formatDouble(rbc2), table);
         changeString("MONO", formatDouble(mono), table);
         changeString("GRAN", formatDouble(gran), table);
         changeString("WTF", formatDouble(rbc1+rbc2), table);
+        changeString("result", result);
 
 
-
-
-
-        rbctot = rbc1 + rbc2;
-        System.out.println(rbctot);
-        String rbcTot = Double.toString(rbctot);
-        System.out.println(rbcTot);
 
 
         XWPFTableCell GRANcell = getCellFromTable(1, 1, 1);
         XWPFParagraph par = GRANcell.getParagraphs().get(0);
         XWPFRun run = par.createRun();
         InputStream granIs = new FileInputStream(granImageUrl);
-        run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl, Units.toEMU(200), Units.toEMU(200));
+        run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl, Units.toEMU(155), Units.toEMU(155));
 
 
         XWPFTableCell MONOcell = getCellFromTable(1, 3, 1);
         par = MONOcell.getParagraphs().get(0);
         run = par.createRun();
         InputStream monoIs = new FileInputStream(monoImageUrl);
-        run.addPicture(monoIs, XWPFDocument.PICTURE_TYPE_JPEG, monoImageUrl, Units.toEMU(200), Units.toEMU(200));
+        run.addPicture(monoIs, XWPFDocument.PICTURE_TYPE_JPEG, monoImageUrl, Units.toEMU(155), Units.toEMU(155));
 
 
         XWPFTableCell RBCcell = getCellFromTable(1, 1, 0);
         par = RBCcell.getParagraphs().get(0);
         run = par.createRun();
         InputStream rbcIs = new FileInputStream(rbcImageUrl);
-        run.addPicture(rbcIs, XWPFDocument.PICTURE_TYPE_JPEG, rbcImageUrl, Units.toEMU(200), Units.toEMU(200));
+        run.addPicture(rbcIs, XWPFDocument.PICTURE_TYPE_JPEG, rbcImageUrl, Units.toEMU(300), Units.toEMU(300));
+
 
         //Write the Document in file system
 
@@ -284,6 +284,8 @@ public class FormDocFile {
     private String formatDouble(double d){
         NumberFormat nf_out = NumberFormat.getNumberInstance(Locale.GERMANY);
         nf_out.setMaximumFractionDigits(2);
+        nf_out.setMinimumFractionDigits(1);
+        nf_out.setMinimumIntegerDigits(1);
         String output = nf_out.format(d);
         return output;
     }

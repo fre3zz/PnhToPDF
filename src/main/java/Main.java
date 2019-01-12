@@ -98,6 +98,60 @@ public class Main extends Application {
         group.add(new Label("ПНГ моноциты:"), 0, 7);
         TextField PnhMono = new TextField();
         group.add(PnhMono, 1,7);
+        PnhGrans.setText("0.0");
+        PnhMono.setText("0.0");
+        PnhRBCi.setText("0.0");
+        PnhRBCii.setText("0.0");
+        PnhGrans.focusedProperty().addListener((obs, ov, nv)->{
+            if(nv) {
+                if (PnhGrans.getText().equals("0.0")) {
+                    PnhGrans.setText("");
+                }
+            }
+            else{
+                if(PnhGrans.getText().equals("")){
+                    PnhGrans.setText("0.0");
+                }
+            }
+        });
+        PnhMono.focusedProperty().addListener((obs, ov, nv)->{
+            if(nv) {
+                if (PnhMono.getText().equals("0.0")) {
+                    PnhMono.setText("");
+                }
+            }
+            else{
+                if(PnhMono.getText().equals("")){
+                    PnhMono.setText("0.0");
+                }
+            }
+        });
+
+        PnhRBCi.focusedProperty().addListener((obs, ov, nv)->{
+            if(nv) {
+                if (PnhRBCi.getText().equals("0.0")) {
+                    PnhRBCi.setText("");
+                }
+            }
+            else{
+                if(PnhRBCi.getText().equals("")){
+                    PnhRBCi.setText("0.0");
+                }
+            }
+        });
+        PnhRBCii.focusedProperty().addListener((obs, ov, nv)->{
+            if(nv) {
+                if (PnhRBCii.getText().equals("0.0")) {
+                    PnhRBCii.setText("");
+                }
+            }
+            else{
+                if(PnhRBCii.getText().equals("")){
+                    PnhRBCii.setText("0.0");
+                }
+            }
+        });
+
 
         Label granLabel = new Label("No file");
 Shape granIcon = pdfIcon();
@@ -343,9 +397,11 @@ private Task pnhDocWorker(String granURL, String rbcURL, FormDocFile formDocFile
                 String granImageUrl = granFile.getSubImage("gran");
                 updateMessage("making mono image");
                 String monoImageUrl = granFile.getSubImage("mono");
+                granFile.closeDoc();
                 PDFtoImage rbcFile = new PDFtoImage(new File(rbcURL));
                 updateMessage("making rbc image");
                 String rbcImageUrl = rbcFile.getSubImage("rbc");
+                rbcFile.closeDoc();
                 updateMessage("making doc file");
                 formDocFile.setGranImageUrl(granImageUrl);
                 formDocFile.setMonoImageUrl(monoImageUrl);
