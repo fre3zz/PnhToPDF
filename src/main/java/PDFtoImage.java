@@ -17,23 +17,29 @@ public String getImageUrlFromPDF() throws IOException {
 }
     
 public String getImageUrlFromPDF(int pageNumber) throws IOException {
-    PDDocument document = PDDocument.load(file);
-    PDFRenderer renderer = new PDFRenderer(document);
-    BufferedImage image = renderer.renderImage(pageNumber);
+    String fileName = file.getName().substring(0,file.getName().length() - 4) + ".jpg";
+    return getImageUrlFromPDF(pageNumber, fileName);
+}
 
-    File imgFile = new File(file.getName().substring(0,file.getName().length() - 4) + ".jpg");
-    ImageIO.write(image, "JPEG", imgFile);
-    document.close();
-return imgFile.toURI().toURL().toString();
-}    
+public String getImageUrlFromPDF(int pageNumber, String fileName) throws IOException {
+        PDDocument document = PDDocument.load(file);
+        PDFRenderer renderer = new PDFRenderer(document);
+        BufferedImage image = renderer.renderImage(pageNumber, 1f);
+
+        File imgFile = new File(fileName + ".jpg");
+        ImageIO.write(image, "JPEG", imgFile);
+        document.close();
+        return imgFile.toURI().toURL().toString();
+}
+
 public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName) throws IOException{
     return getSubImageURLFromPDF(imageRectangle, fileName, 0);
 }
-    public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName, int pageNumber) throws IOException{
+public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName, int pageNumber) throws IOException{
     PDDocument document = PDDocument.load(file);
     PDFRenderer renderer = new PDFRenderer(document);
-    BufferedImage image = renderer.renderImage(pageNumber);
-    BufferedImage subImage = image.getSubimage((int)imageRectangle.getX(), (int)imageRectangle.getY(),(int)imageRectangle.getWidth(), (int)imageRectangle.getHeight());
+    BufferedImage image = renderer.renderImage(pageNumber,3);
+    BufferedImage subImage = image.getSubimage((int)imageRectangle.getX()*3, (int)imageRectangle.getY()*3,(int)imageRectangle.getWidth()*3, (int)imageRectangle.getHeight()*3);
     File imgFile = new File(fileName + ".jpg");
     ImageIO.write(subImage, "JPEG", imgFile);
     document.close();

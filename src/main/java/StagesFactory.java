@@ -130,7 +130,9 @@ public class StagesFactory {
         stage.setWidth(image.getWidth());
         stage.setHeight(image.getHeight());
 stage.setResizable(false);
-
+stage.setX(10);
+stage.setY(10);
+stage.sizeToScene();
         return stage;
     }
 }
