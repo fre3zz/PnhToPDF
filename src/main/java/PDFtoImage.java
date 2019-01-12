@@ -8,9 +8,20 @@ import java.io.IOException;
 
 public class PDFtoImage {
     private File file;
+    private PDDocument document;
+    private PDFRenderer renderer;
 public PDFtoImage(File file){
     this.file = file;
     System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
+    try {
+        document = PDDocument.load(file);
+    }
+    catch (IOException e){
+        System.out.println("Could not load file");
+
+    }
+    renderer = new PDFRenderer(document);
+
 }
 public String getImageUrlFromPDF() throws IOException {
     return getImageUrlFromPDF(0);
@@ -22,13 +33,13 @@ public String getImageUrlFromPDF(int pageNumber) throws IOException {
 }
 
 public String getImageUrlFromPDF(int pageNumber, String fileName) throws IOException {
-        PDDocument document = PDDocument.load(file);
-        PDFRenderer renderer = new PDFRenderer(document);
+
+        renderer = new PDFRenderer(document);
         BufferedImage image = renderer.renderImage(pageNumber, 1f);
 
         File imgFile = new File(fileName + ".jpg");
         ImageIO.write(image, "JPEG", imgFile);
-        document.close();
+        //document.close();
         return imgFile.toURI().toURL().toString();
 }
 
@@ -36,13 +47,12 @@ public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileNa
     return getSubImageURLFromPDF(imageRectangle, fileName, 0);
 }
 public String getSubImageURLFromPDF(ImageRectangle imageRectangle, String fileName, int pageNumber) throws IOException{
-    PDDocument document = PDDocument.load(file);
-    PDFRenderer renderer = new PDFRenderer(document);
+    renderer = new PDFRenderer(document);
     BufferedImage image = renderer.renderImage(pageNumber,3);
     BufferedImage subImage = image.getSubimage((int)imageRectangle.getX()*3, (int)imageRectangle.getY()*3,(int)imageRectangle.getWidth()*3, (int)imageRectangle.getHeight()*3);
     File imgFile = new File(fileName + ".jpg");
     ImageIO.write(subImage, "JPEG", imgFile);
-    document.close();
+    //document.close();
 
     return imgFile.getAbsolutePath();
 }
@@ -61,5 +71,18 @@ public String getSubImage(String fileName) throws IOException{
             break;
     }
     return getSubImageURLFromPDF(imageRectangle, fileName);
+}
+public void closeDoc(){
+    try {
+        document.close();
+        System.out.println("document ii closed");
+    }
+    catch(IOException e){
+        System.out.println("could not close file");
+    }
+
+}
+public int getPageNumber(){
+    return document.getNumberOfPages();
 }
 }

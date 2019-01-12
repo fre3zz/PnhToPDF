@@ -36,6 +36,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class Main extends Application {
@@ -119,14 +120,23 @@ group.add(Granhbox, 0 , 7);
         granButton.setOnAction((e)->{
             if(granURL != null) {
                 PDFtoImage gran = new PDFtoImage(new File(granURL));
-                String granImage = null;
-                try {
-                    granImage = gran.getImageUrlFromPDF();
-                } catch (IOException exc) {
-                    System.out.print(exc);
+                ArrayList<String> imgUrl = new ArrayList<>();
+
+                for(int i = 0; i < gran.getPageNumber(); i++){
+                    try{
+                        imgUrl.add(gran.getImageUrlFromPDF(i, Integer.toString(i)));
+                        }
+                    catch(IOException exc){
+                        System.out.print(exc);
+                        }
                 }
-                Stage stage = StagesFactory.pdfImageView(granImage);
+
+                Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
+                stage.setOnCloseRequest((closeReq)->{
+                    gran.closeDoc();
+                    stage.close();
+                });
             }
         });
         group.add(granButton, 1, 7);
@@ -159,14 +169,23 @@ rbcIcon.setVisible(false);
         rbcButton.setOnAction((e)->{
             if(rbcURL != null) {
                 PDFtoImage rbc = new PDFtoImage(new File(rbcURL));
-                String rbcImage = null;
-                try {
-                    rbcImage = rbc.getImageUrlFromPDF();
-                } catch (IOException exc) {
-                    System.out.print(exc);
+                ArrayList<String> imgUrl = new ArrayList<>();
+
+                for(int i = 0; i < rbc.getPageNumber(); i++){
+                    try{
+                        imgUrl.add(rbc.getImageUrlFromPDF(i, Integer.toString(i)));
+                    }
+                    catch(IOException exc){
+                        System.out.print(exc);
+                    }
                 }
-                Stage stage = StagesFactory.pdfImageView(rbcImage);
+
+                Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
+                stage.setOnCloseRequest((closeReq)->{
+                    rbc.closeDoc();
+                    stage.close();
+                });
             }
         });
         group.add(rbcButton, 1, 8);
@@ -234,39 +253,7 @@ primaryStage.show();
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
         launch(args);
-        /*System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
-        File file = new File("C://PdfBox_Examples//Blokh_Dzh_-_Java_Effektivnoe_programmirovanie_2_izdanie_-_2008.pdf");
-        //Saving the document
-        PDDocument document = PDDocument.load(file);
-        document.save("C://PdfBox_Examples//my_doc.pdf");
-        PDFRenderer renderer = new PDFRenderer(document);
 
-        //Rendering an image from the PDF document
-        BufferedImage image = renderer.renderImage(0);
-BufferedImage smallImage = image.getSubimage(100,100,300,300);
-        //Writing the image to a file
-        ImageIO.write(smallImage, "JPEG", new File("C://PdfBox_Examples//myimage.jpg"));
-
-        System.out.println("Image created");
-        System.out.println("PDF created");
-
-        //Closing the document
-        document.close();
-
-        XWPFDocument document1 = new XWPFDocument();
-        XWPFParagraph par = document1.createParagraph();
-        XWPFRun run = par.createRun();
-        InputStream is = new FileInputStream("C://PdfBox_Examples//myimage.jpg");
-        run.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, "C://PdfBox_Examples//myimage.jpg",Units.toEMU(200), Units.toEMU(200));
-
-        //Write the Document in file system
-        FileOutputStream out = new FileOutputStream( new File("C://PdfBox_Examples//createdocument.docx"));
-        is.close();
-        document1.write(out);
-        out.close();
-        FormDocFile newFile = new FormDocFile(granURL, rbcURL);
-        newFile.writeToDocFile();
-        */
     }
     private boolean isValidGranFile(String url){
         return url.contains("gran") && url.endsWith(".pdf");

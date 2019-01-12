@@ -1,3 +1,5 @@
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -19,18 +21,24 @@ import javafx.stage.Stage;
 
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class StagesFactory {
-    public static Stage pdfImageView(String imgUrl){
+    public static Stage pdfImageView(ArrayList<String> imageUrl){
         Stage stage = new Stage();
         Group group = new Group();
+        IntegerProperty pageNumber = new SimpleIntegerProperty();
+        pageNumber.set(0);
+        ArrayList<Image> imageList = new ArrayList<>();
+        for(String s : imageUrl){
+            imageList.add(new Image(s, false));
+        }
 
-        Image image = new Image(imgUrl, false);
 
-        ImageView imageView = new ImageView(image);
+        ImageView imageView = new ImageView(imageList.get(pageNumber.get()));
 
         group.getChildren().add(imageView);
-        Scene scene = new Scene(group, image.getWidth(), image.getHeight());
+        Scene scene = new Scene(group, imageList.get(0).getWidth(), imageList.get(0).getHeight());
         //group.prefHeight(image.getHeight());
         //group.prefWidth(image.getWidth());
         stage.setScene(scene);
@@ -68,7 +76,28 @@ public class StagesFactory {
         gp.add(storeMono, 2,1);
         gp.setLayoutY(15);
         gp.setLayoutX(15);
+        Button nextImage = new Button(">");
+        Button prevImage = new Button("<");
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(prevImage, nextImage);
+        hbox.setLayoutX(imageList.get(0).getWidth() - 70);
+        hbox.setLayoutY(imageList.get(0).getHeight() - 40);
 
+
+nextImage.setOnAction((e)->{
+    if(pageNumber.get() < imageUrl.size() - 1){
+        gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
+        pageNumber.setValue(pageNumber.getValue() + 1);
+        imageView.setImage(imageList.get(pageNumber.getValue()));
+    }
+});
+prevImage.setOnAction((e)->{
+    if(pageNumber.get() != 0){
+        gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
+        pageNumber.setValue(pageNumber.getValue() - 1);
+        imageView.setImage(imageList.get(pageNumber.getValue()));
+    }
+});
 
 
         Rectangle rect = new Rectangle();
@@ -80,6 +109,7 @@ public class StagesFactory {
             gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
         });
         storeGran.setOnAction((e) ->{
+            imageRectangle.setPageNumber(pageNumber.get());
             imageRectangle.storeGrans(Main.getProps());
         });
         showMono.setOnAction((e)->{
@@ -88,6 +118,7 @@ public class StagesFactory {
             gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
         });
         storeMono.setOnAction((e) ->{
+            imageRectangle.setPageNumber(pageNumber.get());
             imageRectangle.storeMono(Main.getProps());
         });
         showRBC.setOnAction((e)->{
@@ -96,7 +127,9 @@ public class StagesFactory {
             gc.strokeRect(imageRectangle.getX(), imageRectangle.getY(), imageRectangle.getWidth(), imageRectangle.getHeight());
         });
         storeRBC.setOnAction((e) ->{
+            imageRectangle.setPageNumber(pageNumber.get());
             imageRectangle.storeRBC(Main.getProps());
+
         });
         canvas.setOnMousePressed((e)->{
             gc.clearRect(0,0,stage.getWidth(), stage.getHeight());
@@ -126,9 +159,9 @@ public class StagesFactory {
     //System.out.printf("x: %f ; \n y: %f ; \n width: %f ; \n height: %f ;", rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 });
 
-        group.getChildren().addAll(canvas, gp);
-        stage.setWidth(image.getWidth());
-        stage.setHeight(image.getHeight());
+        group.getChildren().addAll(canvas, gp,hbox);
+        stage.setWidth(imageList.get(0).getWidth());
+        stage.setHeight(imageList.get(0).getHeight());
 stage.setResizable(false);
 stage.setX(10);
 stage.setY(10);
