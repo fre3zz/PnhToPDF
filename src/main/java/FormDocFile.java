@@ -3,6 +3,8 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class FormDocFile {
@@ -15,7 +17,7 @@ public class FormDocFile {
     String granImageUrl;
     String monoImageUrl;
     String rbcImageUrl;
-    String date;
+    LocalDate date;
     String fileName;
     String pnhGran;
     String pnhMono;
@@ -42,7 +44,7 @@ public class FormDocFile {
     public FormDocFile(){
 
     }
-    public FormDocFile(String name, String year, String department, String date){
+    public FormDocFile(String name, String year, String department, LocalDate date){
         this.name = name;
         this.year = year;
         this.department = department;
@@ -54,7 +56,10 @@ public class FormDocFile {
         InputStream is = new FileInputStream(template);
         document = new XWPFDocument(is);
         changeString("name",name);
-
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        changeString("date", date.format(dtf));
+        changeString("year", year);
+        changeString("department", department);
 
         File granFile = new File(granURL);
 
@@ -82,7 +87,7 @@ public class FormDocFile {
 
 
 
-        String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + name +".docx";
+        String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + fileName +".docx";
         FileOutputStream out = new FileOutputStream(resultFileURL);
         granIs.close();
         monoIs.close();
@@ -96,10 +101,108 @@ public class FormDocFile {
      XWPFTableCell cell = row.getCell(cellNumber);
      return cell;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getGranURL() {
+        return granURL;
+    }
+
+    public XWPFDocument getDocument() {
+        return document;
+    }
+
+    public void setDocument(XWPFDocument document) {
+        this.document = document;
+    }
+
+    public String getGranImageUrl() {
+        return granImageUrl;
+    }
+
+    public String getMonoImageUrl() {
+        return monoImageUrl;
+    }
+
+    public String getRbcImageUrl() {
+        return rbcImageUrl;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getPnhGran() {
+        return pnhGran;
+    }
+
+    public void setPnhGran(String pnhGran) {
+        this.pnhGran = pnhGran;
+    }
+
+    public String getPnhMono() {
+        return pnhMono;
+    }
+
+    public void setPnhMono(String pnhMono) {
+        this.pnhMono = pnhMono;
+    }
+
+    public String getPnhRBC1() {
+        return pnhRBC1;
+    }
+
+    public void setPnhRBC1(String pnhRBC1) {
+        this.pnhRBC1 = pnhRBC1;
+    }
+
+    public String getPnhRBC2() {
+        return pnhRBC2;
+    }
+
+    public void setPnhRBC2(String pnhRBC2) {
+        this.pnhRBC2 = pnhRBC2;
+    }
+
     public void changeString(String initialText, String targetText){
         for (XWPFParagraph p : document.getParagraphs()) {
             List<XWPFRun> runs = p.getRuns();
             if (runs != null) {
+
                 for (XWPFRun r : runs) {
                     String text = r.getText(0);
 

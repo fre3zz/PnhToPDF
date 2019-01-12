@@ -212,7 +212,7 @@ fileTextField.setText(fileName + " " + fileDate);
 
         });
         date.focusedProperty().addListener((obs, ov, nv) -> {
-            if(!nv){
+            if(!nv && date.getValue() != null){
                 LocalDate localDate = date.getValue();
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
 
@@ -225,9 +225,26 @@ fileTextField.setText(fileName + " " + fileDate);
         Text textArea = new Text("...");
 
         saveFile.setOnAction((e) -> {
-if(true) {
+if(!nameTextField.getText().equals("") &&
+        date.getValue() != null &&
+        !departmentTextField.getText().equals("") &&
+        !yearTextField.getText().equals("") &&
+        !PnhGrans.getText().equals("") &&
+        !PnhMono.getText().equals("") &&
+        !PnhRBCi.getText().equals("") &&
+        !PnhRBCii.getText().equals("") &&
+        !fileTextField.getText().equals("")) {
                 textArea.setText("");
                 FormDocFile formDocFile = new FormDocFile();
+                formDocFile.setDate(date.getValue());
+                formDocFile.setName(nameTextField.getText());
+                formDocFile.setDepartment(departmentTextField.getText());
+                formDocFile.setYear(yearTextField.getText());
+                formDocFile.setPnhGran(PnhGrans.getText());
+                formDocFile.setPnhMono(PnhMono.getText());
+                formDocFile.setPnhRBC1(PnhRBCi.getText());
+                formDocFile.setPnhRBC2(PnhRBCii.getText());
+                formDocFile.setFileName(fileTextField.getText());
 
                 docWorker = pnhDocWorker(granURL, rbcURL, formDocFile);
                 docWorker.messageProperty().addListener((obsv, ov, nv) -> {
