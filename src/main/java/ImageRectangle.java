@@ -2,6 +2,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class ImageRectangle {
     private double width;
@@ -9,7 +10,7 @@ public class ImageRectangle {
     private double x;
     private double y;
     private int pageNumber;
-
+    private static Logger logger = Logger.getLogger(ImageRectangle.class.getName());
     public ImageRectangle(double x, double y, double width, double height){
         this.x = x;
         this.y = y;

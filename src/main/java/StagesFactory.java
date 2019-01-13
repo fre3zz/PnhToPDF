@@ -22,8 +22,10 @@ import javafx.stage.Stage;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class StagesFactory {
+    private static Logger logger = Logger.getLogger(StagesFactory.class.getName());
     public static Stage pdfImageView(ArrayList<String> imageUrl){
         Stage stage = new Stage();
         Group group = new Group();

@@ -3,31 +3,31 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
-public class FormDocFile {
-    String name = "файл";
-    String year;
-    String department;
-    String granURL;
+class FormDocFile {
+    private String name = "файл";
+    private String year;
+    private String department;
+    private String granURL;
 
-    XWPFDocument document;
-    String granImageUrl;
-    String monoImageUrl;
-    String rbcImageUrl;
-    LocalDate date;
-    String fileName;
-    String pnhGran;
-    String pnhMono;
-    String pnhRBC1;
-    String pnhRBC2;
-
+    private XWPFDocument document;
+    private String granImageUrl;
+    private String monoImageUrl;
+    private String rbcImageUrl;
+    private LocalDate date;
+    private String fileName;
+    private String pnhGran;
+    private String pnhMono;
+    private String pnhRBC1;
+    private String pnhRBC2;
+    private static Logger logger = Logger.getLogger(FormDocFile.class.getName());
 
     public void setGranURL(String granURL) {
         this.granURL = granURL;
@@ -46,7 +46,7 @@ public class FormDocFile {
     }
 
     public FormDocFile() {
-
+logger.info("FormDocFile created");
     }
 
     public FormDocFile(String name, String year, String department, LocalDate date) {
@@ -61,7 +61,8 @@ public class FormDocFile {
         double gran, mono, rbc1, rbc2, rbctot;
         String result;
         File granFile = new File(granURL);
-        File template = new File(getClass().getClassLoader().getResource("template.docx").getFile());
+        //File template = new File(getClass().getClassLoader().getResource("files/template.docx").getFile());
+        File template = new File("template.docx");
         InputStream is = new FileInputStream(template);
         document = new XWPFDocument(is);
         changeString("name", name);
@@ -123,7 +124,7 @@ public class FormDocFile {
         out.close();
     }
 
-    public XWPFTableCell getCellFromTable(int tableNumber, int rowNumber, int cellNumber) {
+    private XWPFTableCell getCellFromTable(int tableNumber, int rowNumber, int cellNumber) {
         XWPFTable table = document.getTables().get(tableNumber);
         XWPFTableRow row = table.getRow(rowNumber);
         XWPFTableCell cell = row.getCell(cellNumber);
@@ -226,7 +227,7 @@ public class FormDocFile {
         this.pnhRBC2 = pnhRBC2;
     }
 
-    public void changeString(String initialText, String targetText) {
+    private void changeString(String initialText, String targetText) {
         for (XWPFParagraph p : document.getParagraphs()) {
             List<XWPFRun> runs = p.getRuns();
             if (runs != null) {
@@ -245,7 +246,7 @@ public class FormDocFile {
         }
     }
 
-    public void changeString(String initialText, String targetText, XWPFTable table) {
+    private void changeString(String initialText, String targetText, XWPFTable table) {
         for (XWPFTableRow row : table.getRows()) {
             for (XWPFTableCell cell : row.getTableCells()) {
                 for (XWPFParagraph par : cell.getParagraphs()) {

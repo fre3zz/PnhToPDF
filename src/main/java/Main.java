@@ -2,66 +2,75 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.util.Units;
-import org.apache.poi.wp.usermodel.Paragraph;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import sun.util.resources.LocaleData;
-
-import javax.imageio.ImageIO;
 
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class Main extends Application {
-    private static String granURL = null;
-    private static String rbcURL = null;
-    private static Properties props;
-    private Task docWorker;
-    private String fileName = "";
-    private String fileDate = "";
+    private static String granURL = null; //URL of granulocyte image
+    private static String rbcURL = null; //URL of RBC image
+    private static Properties props; // Properties for making images
+    private Task docWorker; //Task for making .doc file
+    private String fileName = ""; //Name for resulting .doc file
+    private String fileDate = ""; //Date for resulting .doc file
+    private static Logger logger = Logger.getLogger(Main.class.getName()); //Logger
+
+    /*
+    инициализируются логгер и конфигурация
+    из конфигурации получают размеры, положение и номер страницы прямоугольников для вырезания из .pdf
+     */
 
     public void init(){
-        System.out.println("init");
-        props = new Properties();
-        //initProperties(properties);
-        try(InputStream is = new FileInputStream(getClass().getClassLoader().getResource("config.properties").getFile())){
-            props.load(is);
+        try {
+            LogManager.getLogManager().readConfiguration(Main.class.getResourceAsStream("logging.properties"));
+            logger.info("logger properties loaded.");
         }
         catch (IOException e){
-            System.out.println("could not load properties.");
+            logger.log(Level.SEVERE,"Exception: ", e);
+        }
+        props = new Properties();
+        try(InputStream is = new FileInputStream("config.properties")){
+            props.load(is);
+            logger.info("props loaded.");
+        }
+        catch (IOException e){
+            logger.log(Level.SEVERE, "Exception: ", e);
         }
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException{
+        /*
+    сцена с двумя колонками
+    в левой - lable
+    в правой - TextField
+    далее место для прикрепления файлов - нужно перетащить файлы из эксплорера
+    кнопка Save - создает .docs файл
+    кнопка Refresh удаляет все поля, файлы
+     */
+
+    public void start(Stage primaryStage){
+
         GridPane group = new GridPane();
         group.setHgap(10);
         group.setVgap(10);
@@ -71,6 +80,9 @@ public class Main extends Application {
         ColumnConstraints cs2 = new ColumnConstraints();
         group.getColumnConstraints().addAll(cs1, cs2);
         cs1.setPrefWidth(400);
+
+        //Заполнение колонок
+
         Label name = new Label("ФИО:");
         group.add(name, 0, 0);
         TextField nameTextField = new TextField();
@@ -80,28 +92,37 @@ public class Main extends Application {
         group.add(new Label("год рождения:"), 0, 1);
         TextField yearTextField = new TextField();
         group.add(yearTextField, 1,1);
+
         group.add(new Label("Отделение:"), 0,2);
         TextField departmentTextField = new TextField();
         group.add(departmentTextField,1,2);
+
         group.add(new Label("Дата:"), 0, 3);
         DatePicker date = new DatePicker();
         group.add(date,1,3);
+
         group.add(new Label("ПНГ II тип эритроциты:"), 0, 4);
-        TextField PnhRBCi = new TextField();
+        TextField PnhRBCi = new TextField("0.0");
         group.add(PnhRBCi, 1,4);
+
         group.add(new Label("ПНГ III тип эритроциты:"), 0, 5);
-        TextField PnhRBCii = new TextField();
+        TextField PnhRBCii = new TextField("0.0");
         group.add(PnhRBCii, 1,5);
+
         group.add(new Label("ПНГ гранулоциты:"), 0, 6);
-        TextField PnhGrans = new TextField();
+        TextField PnhGrans = new TextField("0.0");
         group.add(PnhGrans, 1,6);
+
         group.add(new Label("ПНГ моноциты:"), 0, 7);
-        TextField PnhMono = new TextField();
+        TextField PnhMono = new TextField("0.0");
         group.add(PnhMono, 1,7);
-        PnhGrans.setText("0.0");
-        PnhMono.setText("0.0");
-        PnhRBCi.setText("0.0");
-        PnhRBCii.setText("0.0");
+
+        /*
+        По умолчанию в полях для количества гранулоцитов, моноцитов и эритроцитов стоят 0
+        При наведении фокуса в TextField удаляет текст и вводится значение
+        Если поле при выводе фокуса остаётся пустым - возвращает значения на 0
+         */
+
         PnhGrans.focusedProperty().addListener((obs, ov, nv)->{
             if(nv) {
                 if (PnhGrans.getText().equals("0.0")) {
@@ -152,9 +173,18 @@ public class Main extends Application {
             }
         });
 
+        /*
+        Область для загружаемых файлов
+        В первой колонке Label, который изначально имеет значение "no file"
+        При переносе файла сменяется на его название.
+        Далее идёт иконка, появляющаяся при перетаскивании файла с нужным названием
+        (содержит gran или RBC и имеет формат .pdf)
+        за иконкой .pdf файла - иконка, удаляющая его и обнуляющая granURL или rbcURL
+        Вторая колонка - кнопки для загрузки тестовых картинок
+         */
 
         Label granLabel = new Label("No file");
-Shape granIcon = pdfIcon();
+        Shape granIcon = pdfIcon();
 
 
         granIcon.setVisible(false);
@@ -270,7 +300,7 @@ fileTextField.setText(fileName + " " + fileDate);
                 LocalDate localDate = date.getValue();
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
 
-                fileDate = localDate.format(dtf);;
+                fileDate = localDate.format(dtf);
 
                 fileTextField.setText(fileName + " " + fileDate);
             }
@@ -409,6 +439,7 @@ private Task pnhDocWorker(String granURL, String rbcURL, FormDocFile formDocFile
             protected Object call() throws Exception
             {
                 updateMessage("...");
+
                 PDFtoImage granFile = new PDFtoImage(new File(granURL));
                 updateMessage("making gran image");
                 String granImageUrl = granFile.getSubImage("gran");

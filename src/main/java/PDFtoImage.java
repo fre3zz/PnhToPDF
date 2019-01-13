@@ -5,11 +5,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class PDFtoImage {
     private File file;
     private PDDocument document;
     private PDFRenderer renderer;
+    private static Logger logger = Logger.getLogger(StagesFactory.class.getName());
 public PDFtoImage(File file){
     this.file = file;
     System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
