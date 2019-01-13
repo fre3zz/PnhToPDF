@@ -413,7 +413,7 @@ primaryStage.show();
         return url.contains("gran") && url.endsWith(".pdf");
     }
     private boolean isValidRbcFile(String url){
-        return url.contains("rbc") && url.endsWith(".pdf");
+        return (url.contains("rbc")||url.contains("RBC")) && url.endsWith(".pdf");
     }
 private Shape pdfIcon(){
     SVGPath Icon1 = new SVGPath();
