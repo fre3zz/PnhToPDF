@@ -223,21 +223,21 @@ public class Main extends Application {
             if(granURL != null) {
                 PDFtoImage gran = new PDFtoImage(new File(granURL));
                 ArrayList<String> imgUrl = new ArrayList<>();
-                logger.info("making {} image files from {}", new Integer(gran.getPageNumber()), granURL);
+                logger.log(Level.INFO, "making {0} image files from {1}", new Object[] {new Integer(gran.getPageNumber()), granURL});
                 for(int i = 0; i < gran.getPageNumber(); i++){
                     try{
                         imgUrl.add(gran.getImageUrlFromPDF(i, Integer.toString(i)));
                         }
                     catch(IOException exc){
-                        logger.log(LEVEL.SEVERE, "exception during making image number {} : {}", new Integer(i), exc);
+                        logger.log(Level.SEVERE, "exception during making image number {0} : {1}", new Object[]{new Integer(i), exc});
                         }
                 }
 
                 Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
-                logger.info("Opening view of granulocytes .pdf file {}", granURL);
+                logger.log(Level.INFO,"Opening view of granulocytes .pdf file {0}", granURL);
                 stage.setOnCloseRequest((closeReq)->{
-                    logger.info("Closing view of granulocytes file {}", granURL);
+                    logger.log(Level.INFO, "Closing view of granulocytes file {0}", granURL);
                     gran.closeDoc();
                     stage.close();
                 });
@@ -275,20 +275,20 @@ public class Main extends Application {
             if(rbcURL != null) {
                 PDFtoImage rbc = new PDFtoImage(new File(rbcURL));
                 ArrayList<String> imgUrl = new ArrayList<>();
-                logger.info("making {} image files from {}", new Integer(rbc.getPageNumber()), rbcURL);
+                logger.log(Level.INFO, "making {0} image files from {1}", new Object[]{new Integer(rbc.getPageNumber()), rbcURL});
                 for(int i = 0; i < rbc.getPageNumber(); i++){
                     try{
                         imgUrl.add(rbc.getImageUrlFromPDF(i, Integer.toString(i)));
                     }
                     catch(IOException exc){
-                       logger.log(LEVEL.SEVERE, "exception during making image number {} : {}", new Integer(i), exc);
+                       logger.log(Level.SEVERE, "exception during making image number {0} : {1}", new Object[]{new Integer(i), exc});
                     }
                 }
 
                 Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
                 stage.setOnCloseRequest((closeReq)->{
-                    logger.info("Closing view of granulocytes file {}", rbcURL);
+                    logger.log(Level.INFO,"Closing view of RBC file {0}", rbcURL);
                     rbc.closeDoc();
                     stage.close();
                 });
