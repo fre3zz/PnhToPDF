@@ -203,42 +203,54 @@ public class Main extends Application {
             }
         });
 
-HBox Granhbox = new HBox();
-Granhbox.setSpacing(10);
-Granhbox.setAlignment(Pos.CENTER_LEFT);
-Granhbox.getChildren().addAll(granLabel, granIcon, deniedGranIcon);
-group.add(Granhbox, 0 , 8);
-
+        HBox Granhbox = new HBox();
+        Granhbox.setSpacing(10);
+        Granhbox.setAlignment(Pos.CENTER_LEFT);
+        Granhbox.getChildren().addAll(granLabel, granIcon, deniedGranIcon);
+        group.add(Granhbox, 0 , 8);
+        
+        /*
+        Кнопка для загрузки картинок, рендеренных из .pdf (granURL)
+        Создет объект PDFtoImage, далее ArrayList<String> из адресов картинок, 
+        Далее для каждой страницы .pdf файла получает URL соответствующей картинки и сохраняет их в ArrayList
+        Картинки создаются с названием N.jpg, где N - номер листа в .pdf
+        После создания картинок в помощью метода getImageUrlFromPDF
+        Создется сцена, которой передаётся массив с ссылками на картинки
+        */
+        
         Button granButton = new Button("Gran and Mono region select");
         granButton.setOnAction((e)->{
             if(granURL != null) {
                 PDFtoImage gran = new PDFtoImage(new File(granURL));
                 ArrayList<String> imgUrl = new ArrayList<>();
-
+                logger.info("making {} image files from {}", new Integer(gran.getPageNumber()), granURL);
                 for(int i = 0; i < gran.getPageNumber(); i++){
                     try{
                         imgUrl.add(gran.getImageUrlFromPDF(i, Integer.toString(i)));
                         }
                     catch(IOException exc){
-                        System.out.print(exc);
+                        logger.log(LEVEL.SEVERE, "exception during making image number {} : {}", new Integer(i), exc);
                         }
                 }
 
                 Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
+                logger.info("Opening view of granulocytes .pdf file {}", granURL);
                 stage.setOnCloseRequest((closeReq)->{
+                    logger.info("Closing view of granulocytes file {}", granURL);
                     gran.closeDoc();
                     stage.close();
                 });
             }
         });
+        
         group.add(granButton, 1, 8);
-
+        /*
+        Создание панели загрузки файлов, аналогичной гранулоцитам
+        */
         Label rbcLabel = new Label("No file");
-
-
-Shape rbcIcon = pdfIcon();
-rbcIcon.setVisible(false);
+        Shape rbcIcon = pdfIcon();
+        rbcIcon.setVisible(false);
         SVGPath deniedRBCIcon = new SVGPath();
         deniedRBCIcon.setFill(Color.rgb(255, 0, 0, .9));
         deniedRBCIcon.setStroke(Color.WHITE);
@@ -263,61 +275,73 @@ rbcIcon.setVisible(false);
             if(rbcURL != null) {
                 PDFtoImage rbc = new PDFtoImage(new File(rbcURL));
                 ArrayList<String> imgUrl = new ArrayList<>();
-
+                logger.info("making {} image files from {}", new Integer(rbc.getPageNumber()), rbcURL);
                 for(int i = 0; i < rbc.getPageNumber(); i++){
                     try{
                         imgUrl.add(rbc.getImageUrlFromPDF(i, Integer.toString(i)));
                     }
                     catch(IOException exc){
-                        System.out.print(exc);
+                       logger.log(LEVEL.SEVERE, "exception during making image number {} : {}", new Integer(i), exc);
                     }
                 }
 
                 Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
                 stage.setOnCloseRequest((closeReq)->{
+                    logger.info("Closing view of granulocytes file {}", rbcURL);
                     rbc.closeDoc();
                     stage.close();
                 });
             }
         });
         group.add(rbcButton, 1, 9);
-
+/*
+Поле fileTextField заполняется автоматиечски и состоит из двух частей:
+корректно созданого имени - в виде "Xxxxx Yyyyy Zzzzzz" - из него получается "Xxxxx YZ"
+выбранной даты - в виде ddMMyy
+*/
         group.add(new Label("File name"), 0, 10);
         TextField fileTextField = new TextField();
         group.add(fileTextField, 1, 10);
-
+        //при снятии фокуса с поля имени обновляет имя файла    
         nameTextField.focusedProperty().addListener((obs, ov, nv) -> {
             if(!nv && nameTextField.getText().matches("[а-яА-Я]{1,}[\\s][а-яА-Я]{1,}[\\s][а-яА-Я]{1,}")){
                 String[] str = nameTextField.getText().split("\\s");
                 fileName = str[0] + " " +str[1].substring(0,1) + str[2].substring(0,1);
-fileTextField.setText(fileName + " " + fileDate);
             }
+            else if(!nv){
+                fileName = "";                
+            }
+            fileTextField.setText(fileName + " " + fileDate);
 
         });
+        //при снятии фокуса с даты обновляет имя файла
         date.focusedProperty().addListener((obs, ov, nv) -> {
             if(!nv && date.getValue() != null){
                 LocalDate localDate = date.getValue();
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
-
                 fileDate = localDate.format(dtf);
-
                 fileTextField.setText(fileName + " " + fileDate);
             }
         });
+        
+        /*
+        
+        */
         Button saveFile = new Button("Save File");
         Text textArea = new Text("...");
 
         saveFile.setOnAction((e) -> {
-if(!nameTextField.getText().equals("") &&
-        date.getValue() != null &&
-        !departmentTextField.getText().equals("") &&
-        !yearTextField.getText().equals("") && yearTextField.getText().matches("[0-9]{4}") &&
-        !PnhGrans.getText().equals("") && PnhGrans.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
-        !PnhMono.getText().equals("") && PnhMono.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
-        !PnhRBCi.getText().equals("") && PnhRBCi.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
-        !PnhRBCii.getText().equals("") && PnhRBCii.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
-        !fileTextField.getText().equals("")) {
+            if(!nameTextField.getText().equals("") &&
+                 date.getValue() != null &&
+                !departmentTextField.getText().equals("") &&
+                !yearTextField.getText().equals("") && yearTextField.getText().matches("[0-9]{4}") &&
+                !PnhGrans.getText().equals("") && PnhGrans.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+                !PnhMono.getText().equals("") && PnhMono.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+                !PnhRBCi.getText().equals("") && PnhRBCi.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+                !PnhRBCii.getText().equals("") && PnhRBCii.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}") &&
+                !fileTextField.getText().equals("")) 
+            {
                 textArea.setText("");
                 FormDocFile formDocFile = new FormDocFile();
                 formDocFile.setDate(date.getValue());
