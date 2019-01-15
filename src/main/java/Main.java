@@ -331,6 +331,17 @@ public class Main extends Application {
         Button saveFile = new Button("Save File");
         Text textArea = new Text("...");
 
+        /*
+        Кнопка для сохранения .doc файлов
+        если поля заполнены, то формирует doc файл
+        Name - не пустое,
+        Department - не пустое,
+        Год рождения - четырёхзначный,
+        Дата выбрана,
+        Все проценты в виде десятичных чисел до от 0.0 до 99.99
+        Имя файла - не пустое,
+         */
+
         saveFile.setOnAction((e) -> {
             if(!nameTextField.getText().equals("") &&
                  date.getValue() != null &&
@@ -344,6 +355,7 @@ public class Main extends Application {
             {
                 textArea.setText("");
                 FormDocFile formDocFile = new FormDocFile();
+                logger.log(Level.INFO, "Forming .doc file: \n ФИО: {0} \n Отделение: {1} \n Дата: {2} \n Год рождения: {3} \n ПНГ Эритроциты II {4} \n ПНГ Эритроциты III {5}\n ПНГ Гранулоциты {6}\n ПНГ Моноциты {7}", new Object[]{nameTextField.getText(), departmentTextField.getText(), date.getValue(), yearTextField.getText(), PnhRBCi.getText(), PnhRBCii.getText(), PnhGrans.getText(), PnhMono.getText()});
                 formDocFile.setDate(date.getValue());
                 formDocFile.setName(nameTextField.getText());
                 formDocFile.setDepartment(departmentTextField.getText());
@@ -353,36 +365,48 @@ public class Main extends Application {
                 formDocFile.setPnhRBC1(PnhRBCi.getText());
                 formDocFile.setPnhRBC2(PnhRBCii.getText());
                 formDocFile.setFileName(fileTextField.getText());
-
                 docWorker = pnhDocWorker(granURL, rbcURL, formDocFile);
                 docWorker.messageProperty().addListener((obsv, ov, nv) -> {
                     textArea.setText(nv);
                 });
                 new Thread(docWorker).start();
             }
-
+            else{
+                String alertText = "";
+                if(nameTextField.getText().equals("")) alertText = alertText+"не заполнено ФИО \n";
+                if(departmentTextField.getText().equals("")) alertText = alertText + "не заполнено отделение\n";
+                if(date.getValue() == null) alertText = alertText + "не заполнена дата\n";
+                if(yearTextField.getText().equals("")) alertText = alertText + "не заполнен год рождения (нужно четырёхзначное число)\n";
+                if(PnhGrans.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}"))alertText = alertText + "некорректное значение у гранулоцитов (должно быть число в десятичном формате от 0.0 до 99.99, не более двух знаков после запятой) \n";
+                if(PnhMono.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}"))alertText = alertText + "некорректное значение у моноцитов(должно быть число в десятичном формате от 0.0 до 99.99, не более двух знаков после запятой) \n";
+                if(PnhRBCi.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}"))alertText = alertText + "некорректное значение у эритроцитов второго типа(должно быть число в десятичном формате от 0.0 до 99.99, не более двух знаков после запятой) \n";
+                if(PnhRBCii.getText().matches("[0-9]{1,2}[\\.\\,][0-9]{1,2}"))alertText = alertText + "некорректное значение у эритроцитов третьего типа(должно быть число в десятичном формате от 0.0 до 99.99, не более двух знаков после запятой) \n";
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText(alertText);
+                alert.setHeaderText(null);
+                alert.showAndWait();
+            }
         });
 
 
         group.add(saveFile,0,11);
         group.add(textArea, 1, 11);
-Button refresh = new Button("refresh");
-group.add(refresh,1, 12);
-refresh.setOnAction((e) -> {
-    deniedRBCIcon.setVisible(false);
-    rbcIcon.setVisible(false);
-    rbcURL = null;
-    rbcLabel.setText("No file");
-    deniedGranIcon.setVisible(false);
-    granIcon.setVisible(false);
-    granURL = null;
-    granLabel.setText("No file");
-    nameTextField.setText("");
-    yearTextField.setText("");
-    departmentTextField.setText("");
-    date.setValue(null);
-    fileTextField.setText("");
-
+        Button refresh = new Button("refresh");
+        group.add(refresh,1, 12);
+        refresh.setOnAction((e) -> {
+            deniedRBCIcon.setVisible(false);
+            rbcIcon.setVisible(false);
+            rbcURL = null;
+            rbcLabel.setText("No file");
+            deniedGranIcon.setVisible(false);
+            granIcon.setVisible(false);
+            granURL = null;
+            granLabel.setText("No file");
+            nameTextField.setText("");
+            yearTextField.setText("");
+            departmentTextField.setText("");
+            date.setValue(null);
+            fileTextField.setText("");
 });
         scene.setOnDragOver((DragEvent event) -> {
             Dragboard db = event.getDragboard();

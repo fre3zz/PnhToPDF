@@ -2,6 +2,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 
+import java.awt.*;
 import java.io.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -117,6 +118,7 @@ logger.info("FormDocFile created");
 
         String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + fileName + ".docx";
         FileOutputStream out = new FileOutputStream(resultFileURL);
+        Desktop.getDesktop().open(new File(resultFileURL));
         granIs.close();
         monoIs.close();
         rbcIs.close();
