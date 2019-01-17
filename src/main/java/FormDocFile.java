@@ -99,6 +99,7 @@ logger.info("FormDocFile created");
         run.addPicture(granIs, XWPFDocument.PICTURE_TYPE_JPEG, granImageUrl, Units.toEMU(155), Units.toEMU(155));
 
 
+
         XWPFTableCell MONOcell = getCellFromTable(1, 3, 1);
         par = MONOcell.getParagraphs().get(0);
         run = par.createRun();
@@ -124,6 +125,13 @@ logger.info("FormDocFile created");
         rbcIs.close();
         document.write(out);
         out.close();
+
+        File file = new File(granImageUrl);
+        file.delete();
+        file = new File(monoImageUrl);
+        file.delete();
+        file = new File(rbcImageUrl);
+        file.delete();
     }
 
     private XWPFTableCell getCellFromTable(int tableNumber, int rowNumber, int cellNumber) {

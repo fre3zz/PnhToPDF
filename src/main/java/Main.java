@@ -42,15 +42,14 @@ public class Main extends Application {
     /*
     инициализируются логгер и конфигурация
     из конфигурации получают размеры, положение и номер страницы прямоугольников для вырезания из .pdf
+    logger создаётся с названием "log" + миллисекунды
      */
 
     public void init(){
         try {
             LogManager.getLogManager().readConfiguration(Main.class.getResourceAsStream("logging.properties"));
-
             Date date = new Date();
             date.getTime();
-
             logger.addHandler(new FileHandler("logs/log" + date.getTime() + ".txt"));
             logger.info("logger properties loaded.");
         }
