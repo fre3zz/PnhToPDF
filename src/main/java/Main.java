@@ -19,10 +19,13 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -44,6 +47,11 @@ public class Main extends Application {
     public void init(){
         try {
             LogManager.getLogManager().readConfiguration(Main.class.getResourceAsStream("logging.properties"));
+
+            Date date = new Date();
+            date.getTime();
+
+            logger.addHandler(new FileHandler("logs/log" + date.getTime() + ".txt"));
             logger.info("logger properties loaded.");
         }
         catch (IOException e){
