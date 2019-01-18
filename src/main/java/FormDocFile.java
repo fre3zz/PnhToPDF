@@ -119,13 +119,13 @@ logger.info("FormDocFile created");
 
         String resultFileURL = granFile.getAbsolutePath().substring(0, granFile.getAbsolutePath().length() - granFile.getName().length()) + fileName + ".docx";
         FileOutputStream out = new FileOutputStream(resultFileURL);
-        Desktop.getDesktop().open(new File(resultFileURL));
+        
         granIs.close();
         monoIs.close();
         rbcIs.close();
         document.write(out);
         out.close();
-
+        Desktop.getDesktop().open(new File(resultFileURL));
         File file = new File(granImageUrl);
         file.delete();
         file = new File(monoImageUrl);
