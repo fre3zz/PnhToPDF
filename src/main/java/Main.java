@@ -245,8 +245,16 @@ public class Main extends Application {
                 logger.log(Level.INFO,"Opening view of granulocytes .pdf file {0}", granURL);
                 stage.setOnCloseRequest((closeReq)->{
                     logger.log(Level.INFO, "Closing view of granulocytes file {0}", granURL);
+
                     gran.closeDoc();
                     stage.close();
+                    System.gc();
+                    for(String str : imgUrl){
+                        File file = new File(str.substring(6));
+                        file.delete();
+                    }
+                    System.out.println("111");
+
                 });
             }
         });
@@ -295,9 +303,15 @@ public class Main extends Application {
                 Stage stage = StagesFactory.pdfImageView(imgUrl);
                 stage.show();
                 stage.setOnCloseRequest((closeReq)->{
+
                     logger.log(Level.INFO,"Closing view of RBC file {0}", rbcURL);
                     rbc.closeDoc();
                     stage.close();
+                    for(String str : imgUrl){
+                        File file = new File(str.substring(6));
+                        file.delete();
+                    }
+                    System.gc();
                 });
             }
         });

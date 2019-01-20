@@ -6,7 +6,7 @@
 
     <groupId>PnhToPDF</groupId>
     <artifactId>PnhToPDF</artifactId>
-    <version>0.9</version>
+    <version>0.9.1</version>
     <packaging>jar</packaging>
     <build>
         <plugins>
