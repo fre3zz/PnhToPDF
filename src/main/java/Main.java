@@ -1,3 +1,6 @@
+import classes.Analysis;
+import classes.Person;
+import classes.Result;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -15,11 +18,8 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
-
 import java.io.*;
 import java.net.MalformedURLException;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -49,7 +49,6 @@ public class Main extends Application {
         try {
             LogManager.getLogManager().readConfiguration(Main.class.getResourceAsStream("logging.properties"));
             Date date = new Date();
-            date.getTime();
             logger.addHandler(new FileHandler("logs/log" + date.getTime() + ".txt"));
             logger.info("logger properties loaded.");
         }
@@ -192,10 +191,7 @@ public class Main extends Application {
 
         Label granLabel = new Label("No file");
         Shape granIcon = pdfIcon();
-
-
         granIcon.setVisible(false);
-
         SVGPath deniedGranIcon = new SVGPath();
         deniedGranIcon.setFill(Color.rgb(255, 0, 0, .9));
         deniedGranIcon.setStroke(Color.WHITE);
@@ -254,7 +250,6 @@ public class Main extends Application {
                         file.delete();
                     }
                     System.out.println("111");
-
                 });
             }
         });
@@ -375,16 +370,20 @@ public class Main extends Application {
                 !fileTextField.getText().equals("")) 
             {
                 textArea.setText("");
-                FormDocFile formDocFile = new FormDocFile();
+                Person person = new Person(nameTextField.getText(), yearTextField.getText());
+                Result result = new Result(PnhGrans.getText(), PnhMono.getText(), PnhRBCi.getText(), PnhRBCii.getText());
+                Analysis analysis = new Analysis(person, departmentTextField.getText(), result, date.getValue());
+
+                FormDocFile formDocFile = new FormDocFile(analysis);
                 logger.log(Level.INFO, "Forming .doc file: \n ФИО: {0} \n Отделение: {1} \n Дата: {2} \n Год рождения: {3} \n ПНГ Эритроциты II {4} \n ПНГ Эритроциты III {5}\n ПНГ Гранулоциты {6}\n ПНГ Моноциты {7}", new Object[]{nameTextField.getText(), departmentTextField.getText(), date.getValue(), yearTextField.getText(), PnhRBCi.getText(), PnhRBCii.getText(), PnhGrans.getText(), PnhMono.getText()});
-                formDocFile.setDate(date.getValue());
-                formDocFile.setName(nameTextField.getText());
-                formDocFile.setDepartment(departmentTextField.getText());
-                formDocFile.setYear(yearTextField.getText());
-                formDocFile.setPnhGran(PnhGrans.getText());
-                formDocFile.setPnhMono(PnhMono.getText());
-                formDocFile.setPnhRBC1(PnhRBCi.getText());
-                formDocFile.setPnhRBC2(PnhRBCii.getText());
+                //formDocFile.setDate(date.getValue());
+                //formDocFile.setName(nameTextField.getText());
+                //formDocFile.setDepartment(departmentTextField.getText());
+                //formDocFile.setYear(yearTextField.getText());
+                //formDocFile.setPnhGran(PnhGrans.getText());
+                //formDocFile.setPnhMono(PnhMono.getText());
+                //formDocFile.setPnhRBC1(PnhRBCi.getText());
+                //formDocFile.setPnhRBC2(PnhRBCii.getText());
                 formDocFile.setFileName(fileTextField.getText());
                 docWorker = pnhDocWorker(granURL, rbcURL, formDocFile);
                 docWorker.messageProperty().addListener((obsv, ov, nv) -> {
@@ -428,6 +427,10 @@ public class Main extends Application {
             departmentTextField.setText("");
             date.setValue(null);
             fileTextField.setText("");
+            PnhGrans.setText("0.0");
+            PnhMono.setText("0.0");
+            PnhRBCi.setText("0.0");
+            PnhRBCii.setText("0.0");
 });
         scene.setOnDragOver((DragEvent event) -> {
             Dragboard db = event.getDragboard();
@@ -465,18 +468,15 @@ public class Main extends Application {
                     }
                 });
             }
-
-
             event.setDropCompleted(true);
             event.consume();
         });
-primaryStage.setScene(scene);
-primaryStage.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
         launch(args);
-
     }
     private boolean isValidGranFile(String url){
         return url.contains("gran") && url.endsWith(".pdf");
@@ -484,7 +484,7 @@ primaryStage.show();
     private boolean isValidRbcFile(String url){
         return (url.contains("rbc")||url.contains("RBC")) && url.endsWith(".pdf");
     }
-private Shape pdfIcon(){
+    private Shape pdfIcon(){
     SVGPath Icon1 = new SVGPath();
     Icon1.setFill(Color.TRANSPARENT);
     Icon1.setStroke(Color.RED);
@@ -525,7 +525,7 @@ private Task pnhDocWorker(String granURL, String rbcURL, FormDocFile formDocFile
                 formDocFile.setRbcImageUrl(rbcImageUrl);
                 formDocFile.setGranURL(granURL);
                 formDocFile.writeToDocFile();
-updateMessage("done!");
+                updateMessage("done!");
                 return true;
             }
         };

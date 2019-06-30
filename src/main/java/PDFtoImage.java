@@ -12,7 +12,7 @@ public class PDFtoImage {
     private PDDocument document;
     private PDFRenderer renderer;
     private static Logger logger = Logger.getLogger(StagesFactory.class.getName());
-public PDFtoImage(File file){
+    public PDFtoImage(File file){
     this.file = file;
     System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
     try {

@@ -12,15 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
-
-
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -176,10 +170,10 @@ prevImage.setOnAction((e)->{
         group.getChildren().addAll(canvas, gp,hbox);
         stage.setWidth(imageList.get(0).getWidth());
         stage.setHeight(imageList.get(0).getHeight());
-stage.setResizable(false);
-stage.setX(10);
-stage.setY(10);
-stage.sizeToScene();
+        stage.setResizable(false);
+        stage.setX(10);
+        stage.setY(10);
+        stage.sizeToScene();
         return stage;
     }
 }
